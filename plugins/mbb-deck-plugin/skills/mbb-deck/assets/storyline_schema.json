@@ -1,0 +1,494 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MBB Deck Storyline",
+  "description": "Schema for storyline JSON consumed by scripts/build_deck.py",
+  "type": "object",
+  "required": [
+    "meta",
+    "slides"
+  ],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": [
+        "title"
+      ],
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "prepared_for": {
+          "type": "string"
+        },
+        "prepared_by": {
+          "type": "string"
+        },
+        "palette": {
+          "type": "string",
+          "enum": [
+            "navy",
+            "red",
+            "green",
+            "neutral"
+          ]
+        },
+        "confidentiality": {
+          "type": "string"
+        },
+        "governing_thought": {
+          "type": "string",
+          "description": "The single-sentence answer the deck supports. Documented for human review; not directly rendered."
+        }
+      }
+    },
+    "slides": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/definitions/title"
+          },
+          {
+            "$ref": "#/definitions/exec_summary"
+          },
+          {
+            "$ref": "#/definitions/bullets"
+          },
+          {
+            "$ref": "#/definitions/two_by_two"
+          },
+          {
+            "$ref": "#/definitions/mece_buckets"
+          },
+          {
+            "$ref": "#/definitions/comparison"
+          },
+          {
+            "$ref": "#/definitions/quote"
+          },
+          {
+            "$ref": "#/definitions/value_chain"
+          },
+          {
+            "$ref": "#/definitions/roadmap"
+          },
+          {
+            "$ref": "#/definitions/section"
+          },
+          {
+            "$ref": "#/definitions/chart"
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "title": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "const": "title"
+        }
+      }
+    },
+    "exec_summary": {
+      "type": "object",
+      "required": [
+        "type",
+        "title",
+        "supporting_points"
+      ],
+      "properties": {
+        "type": {
+          "const": "exec_summary"
+        },
+        "title": {
+          "type": "string",
+          "description": "The governing thought as the slide title"
+        },
+        "framing_line": {
+          "type": "string",
+          "description": "Optional subtitle under the action title — typically methodology, sample size, or logic ('Based on n=240 interviews', 'Acme analysis vs. industry')"
+        },
+        "supporting_points": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 3,
+          "maxItems": 5
+        },
+        "source": {
+          "type": "string"
+        }
+      }
+    },
+    "bullets": {
+      "type": "object",
+      "required": [
+        "type",
+        "title",
+        "bullets"
+      ],
+      "properties": {
+        "type": {
+          "const": "bullets"
+        },
+        "title": {
+          "type": "string"
+        },
+        "framing_line": {
+          "type": "string",
+          "description": "Optional subtitle under the action title — typically methodology, sample size, or logic ('Based on n=240 interviews', 'Acme analysis vs. industry')"
+        },
+        "bullets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 2,
+          "maxItems": 5
+        },
+        "source": {
+          "type": "string"
+        }
+      }
+    },
+    "two_by_two": {
+      "type": "object",
+      "required": [
+        "type",
+        "title"
+      ],
+      "properties": {
+        "type": {
+          "const": "two_by_two"
+        },
+        "title": {
+          "type": "string"
+        },
+        "framing_line": {
+          "type": "string",
+          "description": "Optional subtitle under the action title — typically methodology, sample size, or logic ('Based on n=240 interviews', 'Acme analysis vs. industry')"
+        },
+        "x_axis": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "low": {
+              "type": "string"
+            },
+            "high": {
+              "type": "string"
+            }
+          }
+        },
+        "y_axis": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "low": {
+              "type": "string"
+            },
+            "high": {
+              "type": "string"
+            }
+          }
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "label",
+              "x",
+              "y"
+            ],
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "x": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "y": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "highlight": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "source": {
+          "type": "string"
+        }
+      }
+    },
+    "mece_buckets": {
+      "type": "object",
+      "required": [
+        "type",
+        "title",
+        "buckets"
+      ],
+      "properties": {
+        "type": {
+          "const": "mece_buckets"
+        },
+        "title": {
+          "type": "string"
+        },
+        "framing_line": {
+          "type": "string",
+          "description": "Optional subtitle under the action title — typically methodology, sample size, or logic ('Based on n=240 interviews', 'Acme analysis vs. industry')"
+        },
+        "buckets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "metric": {
+                "type": "string"
+              }
+            }
+          },
+          "minItems": 3,
+          "maxItems": 5
+        },
+        "source": {
+          "type": "string"
+        }
+      }
+    },
+    "comparison": {
+      "type": "object",
+      "required": [
+        "type",
+        "title",
+        "options",
+        "criteria"
+      ],
+      "properties": {
+        "type": {
+          "const": "comparison"
+        },
+        "title": {
+          "type": "string"
+        },
+        "framing_line": {
+          "type": "string",
+          "description": "Optional subtitle under the action title — typically methodology, sample size, or logic ('Based on n=240 interviews', 'Acme analysis vs. industry')"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "criteria": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "ratings"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "ratings": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "recommended": {
+          "type": "integer",
+          "description": "Index into options[] of the recommended choice (0-based)"
+        },
+        "source": {
+          "type": "string"
+        }
+      }
+    },
+    "quote": {
+      "type": "object",
+      "required": [
+        "type",
+        "quote"
+      ],
+      "properties": {
+        "type": {
+          "const": "quote"
+        },
+        "quote": {
+          "type": "string"
+        },
+        "attribution": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      }
+    },
+    "value_chain": {
+      "type": "object",
+      "required": [
+        "type",
+        "title",
+        "steps"
+      ],
+      "properties": {
+        "type": {
+          "const": "value_chain"
+        },
+        "title": {
+          "type": "string"
+        },
+        "framing_line": {
+          "type": "string",
+          "description": "Optional subtitle under the action title — typically methodology, sample size, or logic ('Based on n=240 interviews', 'Acme analysis vs. industry')"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "source": {
+          "type": "string"
+        }
+      }
+    },
+    "roadmap": {
+      "type": "object",
+      "required": [
+        "type",
+        "title",
+        "phases"
+      ],
+      "properties": {
+        "type": {
+          "const": "roadmap"
+        },
+        "title": {
+          "type": "string"
+        },
+        "framing_line": {
+          "type": "string",
+          "description": "Optional subtitle under the action title — typically methodology, sample size, or logic ('Based on n=240 interviews', 'Acme analysis vs. industry')"
+        },
+        "phases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "milestones"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "milestones": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "source": {
+          "type": "string"
+        }
+      }
+    },
+    "section": {
+      "type": "object",
+      "required": [
+        "type",
+        "title"
+      ],
+      "properties": {
+        "type": {
+          "const": "section"
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "chart": {
+      "type": "object",
+      "required": [
+        "type",
+        "title"
+      ],
+      "properties": {
+        "type": {
+          "const": "chart"
+        },
+        "title": {
+          "type": "string"
+        },
+        "framing_line": {
+          "type": "string",
+          "description": "Optional subtitle under the action title — typically methodology, sample size, or logic ('Based on n=240 interviews', 'Acme analysis vs. industry')"
+        },
+        "placeholder_text": {
+          "type": "string"
+        },
+        "caption": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

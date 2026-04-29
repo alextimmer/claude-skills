@@ -1,0 +1,50 @@
+{
+  "$schema": "Color palettes for MBB-style decks. Each palette defines an accent color plus standard neutrals. The accent is used sparingly: action titles, highlighted data points, the recommended option in a comparison.",
+  "palettes": {
+    "navy": {
+      "name": "Navy (McKinsey-inspired)",
+      "accent": "#003A70",
+      "accent_light": "#4D6E96",
+      "background": "#FFFFFF",
+      "body_text": "#333333",
+      "footnote": "#888888",
+      "neutral_dark": "#555555",
+      "neutral_mid": "#999999",
+      "neutral_light": "#DDDDDD"
+    },
+    "red": {
+      "name": "Red (Bain-inspired)",
+      "accent": "#CC0000",
+      "accent_light": "#E04D4D",
+      "background": "#FFFFFF",
+      "body_text": "#333333",
+      "footnote": "#888888",
+      "neutral_dark": "#555555",
+      "neutral_mid": "#999999",
+      "neutral_light": "#DDDDDD"
+    },
+    "green": {
+      "name": "Green (BCG-inspired)",
+      "accent": "#00543D",
+      "accent_light": "#4D8270",
+      "background": "#FFFFFF",
+      "body_text": "#333333",
+      "footnote": "#888888",
+      "neutral_dark": "#555555",
+      "neutral_mid": "#999999",
+      "neutral_light": "#DDDDDD"
+    },
+    "neutral": {
+      "name": "Neutral (no accent color)",
+      "accent": "#333333",
+      "accent_light": "#666666",
+      "background": "#FFFFFF",
+      "body_text": "#333333",
+      "footnote": "#888888",
+      "neutral_dark": "#555555",
+      "neutral_mid": "#999999",
+      "neutral_light": "#DDDDDD"
+    }
+  },
+  "default_palette": "navy"
+}

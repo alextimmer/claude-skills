@@ -1,0 +1,152 @@
+{
+  "$schema": "Test prompts for measuring whether the mbb-deck skill triggers correctly. Run these through the skill_creator eval harness or a similar tool.",
+  "skill": "mbb-deck",
+  "expected_trigger_rate_min": 0.85,
+  "expected_no_trigger_rate_min": 0.90,
+  "should_trigger": [
+    {
+      "id": "trigger-01",
+      "prompt": "Build me an MBB-style deck recommending whether we should expand to Germany.",
+      "rationale": "Explicit MBB-style request"
+    },
+    {
+      "id": "trigger-02",
+      "prompt": "I need a McKinsey-style presentation on our 2026 growth strategy for the board.",
+      "rationale": "Names a specific firm style and a board audience"
+    },
+    {
+      "id": "trigger-03",
+      "prompt": "Can you put together a strategy deck for our exec team on whether to acquire CompetitorX?",
+      "rationale": "'Strategy deck' for an exec audience signals consulting style"
+    },
+    {
+      "id": "trigger-04",
+      "prompt": "I have a board meeting next Tuesday and need slides recommending how to respond to the competitive threat. Make it executive-grade.",
+      "rationale": "Board meeting + recommendation + executive-grade are strong signals"
+    },
+    {
+      "id": "trigger-05",
+      "prompt": "Build a consulting-style presentation analyzing why our growth has slowed and what to do about it.",
+      "rationale": "Consulting-style + diagnostic + recommendation"
+    },
+    {
+      "id": "trigger-06",
+      "prompt": "Help me draft a deck using the pyramid principle to recommend our Q4 budget reallocation.",
+      "rationale": "Names the Minto Pyramid Principle directly"
+    },
+    {
+      "id": "trigger-07",
+      "prompt": "I need slides with action titles and an executive summary upfront, recommending a path forward on the platform migration.",
+      "rationale": "Names key MBB conventions (action titles, exec summary, path forward)"
+    },
+    {
+      "id": "trigger-08",
+      "prompt": "Put together a Bain-style or BCG-style presentation on our pricing strategy.",
+      "rationale": "Names two MBB firms"
+    },
+    {
+      "id": "trigger-09",
+      "prompt": "Build an executive briefing deck for the CEO on our expansion options. It needs to be MECE.",
+      "rationale": "Executive briefing + MECE is consulting vocabulary"
+    },
+    {
+      "id": "trigger-10",
+      "prompt": "I want a deck that reads like a consulting report — clear recommendation, supporting findings, MECE breakdown.",
+      "rationale": "Direct description of the style"
+    },
+    {
+      "id": "trigger-11",
+      "prompt": "Make me a board deck that lays out three strategic options and recommends one.",
+      "rationale": "Board deck with comparison + recommendation = MBB pattern"
+    },
+    {
+      "id": "trigger-12",
+      "prompt": "I need to present to the board on whether we should sell the SMB business. Help me build the slides — they should be polished and structured like a strategy consultant would do it.",
+      "rationale": "Strategy consultant + polished + board"
+    },
+    {
+      "id": "trigger-13",
+      "prompt": "Build a strategy presentation. Each slide title should state the takeaway, not the topic.",
+      "rationale": "Action-title convention named directly"
+    },
+    {
+      "id": "trigger-14",
+      "prompt": "I have raw findings on our customer segmentation. Help me structure them into a deck with a clear governing thought and ladder up the supporting evidence.",
+      "rationale": "Governing thought + ladder up = pyramid principle vocabulary"
+    },
+    {
+      "id": "trigger-15",
+      "prompt": "Build a 12-slide deck recommending our market entry strategy. Cover situation, complication, options, recommendation, and implementation.",
+      "rationale": "SCQA structure + standard MBB deck shape"
+    }
+  ],
+  "should_not_trigger": [
+    {
+      "id": "no-trigger-01",
+      "prompt": "Make me a slideshow of my vacation photos.",
+      "rationale": "Casual, photo-based, no business audience"
+    },
+    {
+      "id": "no-trigger-02",
+      "prompt": "Build a kids' birthday party slideshow with cute graphics.",
+      "rationale": "Explicitly playful and decorative"
+    },
+    {
+      "id": "no-trigger-03",
+      "prompt": "Help me prepare lecture slides for my biology class.",
+      "rationale": "Educational lecture, not strategy"
+    },
+    {
+      "id": "no-trigger-04",
+      "prompt": "Create a Pokémon-themed PowerPoint for my niece.",
+      "rationale": "Creative/themed, no business context"
+    },
+    {
+      "id": "no-trigger-05",
+      "prompt": "Write a Python script that generates random charts.",
+      "rationale": "Coding task, not a deck"
+    },
+    {
+      "id": "no-trigger-06",
+      "prompt": "What is the McKinsey 7S framework?",
+      "rationale": "Definitional question, not a deck request — even though McKinsey is named"
+    },
+    {
+      "id": "no-trigger-07",
+      "prompt": "Convert this PDF into an editable Word document.",
+      "rationale": "File conversion, not deck creation"
+    },
+    {
+      "id": "no-trigger-08",
+      "prompt": "Help me write a wedding toast.",
+      "rationale": "Personal, not business"
+    },
+    {
+      "id": "no-trigger-09",
+      "prompt": "I'm building a slide deck for my band's concert tour. Make it look cool and edgy.",
+      "rationale": "Creative/aesthetic, opposite of MBB style"
+    },
+    {
+      "id": "no-trigger-10",
+      "prompt": "Summarize this meeting transcript into bullet points.",
+      "rationale": "Summarization, no deck"
+    },
+    {
+      "id": "no-trigger-11",
+      "prompt": "Make a quick training deck for new hires on how our internal Jira works.",
+      "rationale": "Tutorial / how-to, not strategy. Borderline — but the audience and content are operational, not executive."
+    },
+    {
+      "id": "no-trigger-12",
+      "prompt": "Help me design a poster for the office holiday party.",
+      "rationale": "Design / event, not strategy"
+    }
+  ],
+  "notes": [
+    "Trigger rate target: at least 85% of should_trigger prompts should activate the skill.",
+    "False-positive rate target: at most 10% of should_not_trigger prompts should activate it.",
+    "If trigger rate is too low, make the SKILL.md description more specific about the linguistic cues (board, executive, recommendation, strategy, consulting).",
+    "If false-positive rate is too high, add explicit counter-examples to the description ('Do not trigger for casual/creative presentations, lecture slides, photo decks').",
+    "Borderline case 'no-trigger-11' (training deck) is debatable — adjust based on what behavior you want."
+  ]
+}

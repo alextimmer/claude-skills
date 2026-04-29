@@ -1,0 +1,35 @@
+{
+  "name": "claude-skills",
+  "owner": {
+    "name": "alextimmer",
+  },
+  "description": "A collection of Claude skills, plugins, and subagents. Currently includes mbb-deck-plugin for building MBB-style management consulting presentations.",
+  "plugins": [
+    {
+      "name": "mbb-deck-plugin",
+      "source": "./plugins/mbb-deck-plugin",
+      "description": "Build presentations in the structural style of top-tier management consulting firms: Pyramid Principle storylines, action titles, MECE structure, and minimal executive-grade visuals. Includes /storyline and /critique-deck commands plus storyline-reviewer and qa-reviewer subagents.",
+      "category": "productivity",
+      "keywords": [
+        "presentation",
+        "slides",
+        "consulting",
+        "mbb",
+        "mckinsey",
+        "bain",
+        "bcg",
+        "pyramid-principle",
+        "minto",
+        "strategy",
+        "deck",
+        "executive"
+      ],
+      "author": {
+        "name": "alextimmer",
+      },
+      "homepage": "https://github.com/alextimmer/claude-skills",
+      "repository": "https://github.com/alextimmer/claude-skills",
+      "license": "PolyForm-Noncommercial-1.0.0"
+    }
+  ]
+}

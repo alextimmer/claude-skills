@@ -1,0 +1,33 @@
+{
+  "$schema": "Visual style configuration for MBB-style decks. Used by scripts/build_deck.py.",
+  "slide": {
+    "width_in": 13.333,
+    "height_in": 7.5,
+    "margin_in": 0.5
+  },
+  "typography": {
+    "body_font": "Calibri",
+    "title_font": "Calibri",
+    "action_title_pt": 24,
+    "action_title_bold": true,
+    "framing_line_pt": 12,
+    "subtitle_pt": 16,
+    "body_pt": 14,
+    "bullet_pt": 16,
+    "footnote_pt": 9,
+    "exec_summary_title_pt": 20,
+    "exec_summary_point_pt": 14,
+    "title_slide_main_pt": 36,
+    "title_slide_subtitle_pt": 20,
+    "title_slide_meta_pt": 12
+  },
+  "spacing": {
+    "title_top_in": 0.4,
+    "title_height_in": 0.9,
+    "framing_line_height_in": 0.4,
+    "body_top_in": 1.9,
+    "footer_height_in": 0.3,
+    "footer_y_offset_in": 0.2
+  },
+  "sample_data_note": "These values are tuned for a 16:9 widescreen layout (13.333 x 7.5 in). Adjust if your default slide size differs."
+}

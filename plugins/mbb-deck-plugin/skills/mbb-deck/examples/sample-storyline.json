@@ -1,0 +1,263 @@
+{
+  "meta": {
+    "title": "Acme 2026 Growth Strategy",
+    "subtitle": "Recommendation to the Board",
+    "date": "April 2026",
+    "prepared_for": "Acme Board of Directors",
+    "prepared_by": "Strategy Team",
+    "palette": "navy",
+    "confidentiality": "Confidential — Acme internal",
+    "governing_thought": "Acme should move upmarket to enterprise HR in 2026, funded by sunsetting the SMB tier — adding an estimated $40M ARR over 24 months."
+  },
+  "slides": [
+    {
+      "type": "title"
+    },
+    {
+      "type": "exec_summary",
+      "title": "Acme should move upmarket to enterprise HR in 2026, funded by sunsetting SMB — adding an estimated $40M ARR over 24 months",
+      "supporting_points": [
+        "Growth has stalled at 3% for two years while three competitors have grown 25%+ by moving upmarket",
+        "The enterprise segment is $4.2B and growing 18% — three times our current addressable market",
+        "Two of our top-30 customers already use Acme above 500 employees and would expand within 12 months",
+        "The product gap to enterprise-ready is six features, deliverable in three quarters with current capacity",
+        "The SMB tier costs $14M annually to serve and is contribution-margin negative in 60% of accounts"
+      ],
+      "source": "Strategy team analysis; Acme financials FY24"
+    },
+    {
+      "type": "bullets",
+      "title": "Growth has stalled at 3% for two years while three competitors have grown 25%+",
+      "framing_line": "Based on Acme financials FY23–FY24 and competitor 10-K filings (n=3 peers)",
+      "bullets": [...
+      ],
+      "source": "..."
+    },
+    {
+      "type": "bullets",
+      "title": "Growth has stalled at 3% for two years while three competitors have grown 25%+ by moving upmarket",
+      "bullets": [
+        "Acme ARR has grown 3.1% in FY23 and 3.4% in FY24, versus a five-year average of 14%",
+        "Three named competitors have each crossed $300M ARR by adding enterprise tiers since 2023",
+        "Net revenue retention has fallen from 118% to 102% over the same period",
+        "Customer count has grown, but average contract value has compressed by 11%"
+      ],
+      "source": "Acme financials FY23–FY24; competitor 10-K filings"
+    },
+    {
+      "type": "two_by_two",
+      "title": "Three of our five product lines fall in the low-growth, low-margin quadrant",
+      "x_axis": {
+        "label": "Market growth rate",
+        "low": "Low",
+        "high": "High"
+      },
+      "y_axis": {
+        "label": "Acme contribution margin",
+        "low": "Low",
+        "high": "High"
+      },
+      "items": [
+        {
+          "label": "Core HR",
+          "x": 0.3,
+          "y": 0.7,
+          "highlight": false
+        },
+        {
+          "label": "Payroll",
+          "x": 0.25,
+          "y": 0.4,
+          "highlight": false
+        },
+        {
+          "label": "Benefits",
+          "x": 0.2,
+          "y": 0.3,
+          "highlight": false
+        },
+        {
+          "label": "Talent",
+          "x": 0.7,
+          "y": 0.6,
+          "highlight": true
+        },
+        {
+          "label": "Performance",
+          "x": 0.85,
+          "y": 0.55,
+          "highlight": true
+        }
+      ],
+      "source": "Acme product P&L FY24; market growth from Gartner 2024"
+    },
+    {
+      "type": "mece_buckets",
+      "title": "We evaluated four growth paths against three criteria; only enterprise expansion meets all three",
+      "buckets": [
+        {
+          "name": "Enterprise expansion",
+          "description": "Move upmarket to companies with 500+ employees",
+          "metric": "$40M ARR"
+        },
+        {
+          "name": "Geographic expansion",
+          "description": "Enter EU and Asia-Pacific markets",
+          "metric": "$18M ARR"
+        },
+        {
+          "name": "Product adjacency",
+          "description": "Add learning management to existing platform",
+          "metric": "$22M ARR"
+        },
+        {
+          "name": "M&A roll-up",
+          "description": "Acquire two niche HR tools",
+          "metric": "$30M ARR"
+        }
+      ],
+      "source": "Strategy team modeling, March 2026"
+    },
+    {
+      "type": "comparison",
+      "title": "Enterprise expansion is the only option that scores high on market size, fit, and feasibility",
+      "options": [
+        "Enterprise",
+        "Geographic",
+        "Product adjacency",
+        "M&A roll-up"
+      ],
+      "criteria": [
+        {
+          "name": "Market size",
+          "ratings": [
+            "High",
+            "Medium",
+            "Medium",
+            "Low"
+          ]
+        },
+        {
+          "name": "Strategic fit",
+          "ratings": [
+            "High",
+            "Medium",
+            "High",
+            "Low"
+          ]
+        },
+        {
+          "name": "Feasibility (12 months)",
+          "ratings": [
+            "High",
+            "Low",
+            "Medium",
+            "Low"
+          ]
+        },
+        {
+          "name": "Capital required",
+          "ratings": [
+            "Low",
+            "High",
+            "Medium",
+            "Very High"
+          ]
+        },
+        {
+          "name": "Competitive risk",
+          "ratings": [
+            "Medium",
+            "High",
+            "Medium",
+            "Medium"
+          ]
+        }
+      ],
+      "recommended": 0,
+      "source": "Strategy team scoring, March 2026"
+    },
+    {
+      "type": "value_chain",
+      "title": "The path to enterprise-ready spans four sequential capabilities, deliverable in three quarters",
+      "steps": [
+        {
+          "name": "SSO & SCIM",
+          "description": "Enterprise identity integration"
+        },
+        {
+          "name": "Audit logs",
+          "description": "SOC 2 + customer audit support"
+        },
+        {
+          "name": "Multi-entity",
+          "description": "Subsidiary structures and rollups"
+        },
+        {
+          "name": "API platform",
+          "description": "Public APIs and webhooks at SLA"
+        }
+      ],
+      "source": "Engineering capacity plan, FY26"
+    },
+    {
+      "type": "quote",
+      "quote": "Acme has the best mid-market HR product we've used. The day they support our European subsidiaries, we'll triple our spend.",
+      "attribution": "VP People, Top-10 Acme customer (1,200 employees)",
+      "source": "Customer interview, Feb 2026"
+    },
+    {
+      "type": "chart",
+      "title": "Combined: enterprise expansion adds $40M ARR by end-2027; sunsetting SMB frees $14M to fund it",
+      "placeholder_text": "[ Waterfall chart: FY25 ARR → +Enterprise → +Existing expansion → −SMB churn → FY27 ARR ]",
+      "caption": "Net new ARR of +$26M, plus $14M annual cost savings from SMB sunset, for a total $40M EBITDA improvement.",
+      "source": "Strategy team financial model, March 2026"
+    },
+    {
+      "type": "roadmap",
+      "title": "Implementation in three phases over 18 months, with the SMB sunset starting in Q2 2026",
+      "phases": [
+        {
+          "name": "Q2 2026 — Foundation",
+          "milestones": [
+            "SSO & SCIM in beta",
+            "Begin SMB sunset comms",
+            "Enterprise sales hires (3)"
+          ]
+        },
+        {
+          "name": "Q3–Q4 2026 — Build",
+          "milestones": [
+            "Audit logs GA",
+            "Multi-entity GA",
+            "First 5 enterprise wins",
+            "SMB tier off price list"
+          ]
+        },
+        {
+          "name": "H1 2027 — Scale",
+          "milestones": [
+            "API platform GA",
+            "20 enterprise wins",
+            "SMB sunset complete"
+          ]
+        }
+      ],
+      "source": "Implementation plan, March 2026"
+    },
+    {
+      "type": "section",
+      "title": "Appendix"
+    },
+    {
+      "type": "bullets",
+      "title": "Key risks and mitigations span three categories: sales cycle, customer churn, and competitive response",
+      "bullets": [
+        "Enterprise sales cycle (6–9 months): mitigated by leveraging existing top-30 accounts as anchor customers",
+        "SMB churn during sunset: mitigated by 18-month transition period and partner referral program",
+        "Competitive response: mitigated by 9-month feature lead and existing customer relationships"
+      ],
+      "source": "Risk review with executive team, March 2026"
+    }
+  ]
+}
