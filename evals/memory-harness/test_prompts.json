@@ -1,0 +1,100 @@
+{
+  "$schema": "Test prompts for measuring whether the memory-harness skill triggers correctly. Run these through the skill_creator eval harness or a similar tool.",
+  "skill": "memory-harness",
+  "expected_trigger_rate_min": 0.85,
+  "expected_no_trigger_rate_min": 0.90,
+  "should_trigger": [
+    {
+      "id": "trigger-01",
+      "prompt": "Install my harness in this repo.",
+      "rationale": "The canonical invocation named in the skill description"
+    },
+    {
+      "id": "trigger-02",
+      "prompt": "Set up project memory for this repository so future sessions remember decisions.",
+      "rationale": "'Set up project memory' is named in the description"
+    },
+    {
+      "id": "trigger-03",
+      "prompt": "Can you verify the harness is working here? The Stop hook doesn't seem to fire.",
+      "rationale": "'Verify the harness' + its hook vocabulary"
+    },
+    {
+      "id": "trigger-04",
+      "prompt": "Add the Claude Code memory harness (CLAUDE.md + rules + hooks) to this project.",
+      "rationale": "Names the harness and its components explicitly"
+    },
+    {
+      "id": "trigger-05",
+      "prompt": "memory-sessions.md has gotten huge — prune the old entries and promote anything durable into memory-decisions.md.",
+      "rationale": "Prune/promote of harness memory files is a listed maintenance task"
+    },
+    {
+      "id": "trigger-06",
+      "prompt": "Set this repo up so Claude Code sessions persist what they learn between sessions.",
+      "rationale": "Describes the harness's exact problem without naming it"
+    },
+    {
+      "id": "trigger-07",
+      "prompt": "The memory-reminder Stop hook fires on every session in this repo — can you tune its patterns?",
+      "rationale": "Hook-tuning is a listed task with a dedicated reference"
+    },
+    {
+      "id": "trigger-08",
+      "prompt": "Run the harness self-test and tell me if the hooks are wired correctly.",
+      "rationale": "Self-test verification is a listed task"
+    },
+    {
+      "id": "trigger-09",
+      "prompt": "I want a CLAUDE.md plus auto-loaded memory rules files in this repo like my other projects have.",
+      "rationale": "Asks for the harness's file structure by content"
+    },
+    {
+      "id": "trigger-10",
+      "prompt": "Audit the .claude/rules memory files — entries are missing dates and agent attribution.",
+      "rationale": "Memory-convention audit is a listed maintenance task"
+    }
+  ],
+  "should_not_trigger": [
+    {
+      "id": "no-trigger-01",
+      "prompt": "What is a git pre-commit hook and how do I write one?",
+      "rationale": "Generic git hooks question, not Claude Code harness hooks"
+    },
+    {
+      "id": "no-trigger-02",
+      "prompt": "How much memory does this Python process use? It looks like a leak.",
+      "rationale": "'Memory' in the RAM sense, not project memory"
+    },
+    {
+      "id": "no-trigger-03",
+      "prompt": "Write a test harness for our REST API endpoints.",
+      "rationale": "'Harness' in the test-harness sense"
+    },
+    {
+      "id": "no-trigger-04",
+      "prompt": "Add a session timeout to our web app so users are logged out after 30 minutes.",
+      "rationale": "'Session' in the web-auth sense"
+    },
+    {
+      "id": "no-trigger-05",
+      "prompt": "Summarize the architecture decisions in this codebase's ADR folder.",
+      "rationale": "Reading existing decision records, not installing/maintaining harness memory"
+    },
+    {
+      "id": "no-trigger-06",
+      "prompt": "Fix the failing unit tests in the parser module.",
+      "rationale": "Ordinary development work"
+    },
+    {
+      "id": "no-trigger-07",
+      "prompt": "How do Claude Code permissions rules work in settings.json?",
+      "rationale": "Claude Code configuration question, but not about the memory harness"
+    },
+    {
+      "id": "no-trigger-08",
+      "prompt": "Create a README for this repository describing how to build and run it.",
+      "rationale": "Plain documentation task, not harness installation"
+    }
+  ]
+}

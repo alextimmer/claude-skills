@@ -1,0 +1,20 @@
+{
+  "name": "claude-memory-harness",
+  "description": "Project memory harness for Claude Code: CLAUDE.md standing instructions, dated + attributed .claude/rules memory, and tested SessionStart/PreCompact/Stop hooks — installed into any repo via the bundled 'memory-harness' skill.",
+  "author": {
+    "name": "alextimmer"
+  },
+  "homepage": "https://github.com/alextimmer/claude-skills",
+  "repository": "https://github.com/alextimmer/claude-skills",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "keywords": [
+    "memory",
+    "project-memory",
+    "harness",
+    "hooks",
+    "claude-md",
+    "session-continuity",
+    "stop-hook",
+    "knowledge-persistence"
+  ]
+}

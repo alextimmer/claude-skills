@@ -102,11 +102,17 @@ Address any ERROR-level issues. WARNING-level issues (e.g., topic titles, missin
 
 The storyline JSON is format-agnostic. The same storyline can be rendered four different ways. Pick based on the user's context. Ask if not clear.
 
+**Environment quick-map** (the methodology is identical everywhere; only the renderer differs):
+
+- **claude.ai (web/desktop chat):** the code-execution sandbox has `python-pptx` preinstalled and can run this skill's bundled scripts — Option D works with **zero setup** there (prefer it: deterministic MBB styling), and the validator (Step 5) runs too. Native file creation covers Option C.
+- **Claude Code:** Option D needs local Python (`scripts/REQUIREMENTS.md`). Option C is available when the official `pptx` skill is installed (marketplace `anthropics/skills`, plugin `document-skills`) or another PowerPoint capability is present.
+- **Anywhere else:** Options A and B always work — they are plain text.
+
 **Option A — Markdown outline.** Produce a structured Markdown document the user pastes into PowerPoint, Keynote, or Google Slides. No tooling required on either end.
 
 **Option B — Marp markdown.** If the user works in Marp (markdown-based slide tooling, version-controlled decks, exports to HTML/PDF/PPTX via Marp CLI), produce Marp-compatible markdown directly. See `references/marp-rendering.md` for the complete translation guide — frontmatter, slide patterns, columns, images, themes, and all syntax conventions. Themes are user-provided, not bundled.
 
-**Option C — Native `.pptx` via the PowerPoint Claude plugin.** If the official PowerPoint Claude plugin is available in the user's environment, hand off to it. Suggest this option first when it's available — produces a real `.pptx` without requiring local Python.
+**Option C — Native `.pptx` via an environment PowerPoint capability.** Covers whatever the host provides: the official Anthropic `pptx` skill (Claude Code: `/plugin install document-skills@anthropic-agent-skills`), claude.ai's built-in file creation, or Claude's PowerPoint add-in when working inside Office itself. Native renderers know nothing about MBB conventions — **always hand off the approved storyline together with the renderer handoff brief** from `references/output-formats.md` (style contract: typography, palette, chart rules, footers). Suggest this option when such a capability is available and Option D's requirements are not met.
 
 **Option D — `.pptx` via the bundled Python script.** If the user has Python 3.9+ with `python-pptx` installed (see `scripts/REQUIREMENTS.md`), use `scripts/build_deck.py`:
 
@@ -114,7 +120,7 @@ The storyline JSON is format-agnostic. The same storyline can be rendered four d
 python scripts/build_deck.py path/to/storyline.json --out output.pptx
 ```
 
-Available palettes: `navy`, `red`, `green`, `neutral`. Set in `meta.palette` or override with `--palette`.
+Available palettes: `navy`, `red`, `green`, `neutral`. Set in `meta.palette` or override with `--palette`. On claude.ai this option needs no setup at all — `python-pptx` is preinstalled in the code-execution sandbox and the bundled scripts run there directly.
 
 See `references/output-formats.md` for a full decision guide and worked examples of each option.
 

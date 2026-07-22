@@ -1,14 +1,12 @@
 {
   "name": "mbb-deck-plugin",
-  "version": "0.1.0",
   "description": "Build presentations in the structural style of top-tier management consulting firms (McKinsey, Bain, BCG): Pyramid Principle storylines, action titles, MECE structure, and minimal executive-grade visuals.",
   "author": {
-    "name": "YOUR_NAME",
-    "email": "YOUR_EMAIL@example.com"
+    "name": "alextimmer"
   },
-  "homepage": "https://github.com/YOUR_USERNAME/claude-skills",
-  "repository": "https://github.com/YOUR_USERNAME/claude-skills",
-  "license": "MIT",
+  "homepage": "https://github.com/alextimmer/claude-skills",
+  "repository": "https://github.com/alextimmer/claude-skills",
+  "license": "PolyForm-Noncommercial-1.0.0",
   "keywords": [
     "presentation",
     "slides",

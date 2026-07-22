@@ -34,3 +34,9 @@ build/
 
 # Logs
 *.log
+scratch/*
+
+# Maintainer research (never ships; keep out of the published repo)
+plugins/claude-memory-harness/research/
+
+*.code-workspace

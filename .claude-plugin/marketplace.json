@@ -1,9 +1,9 @@
 {
   "name": "claude-skills",
   "owner": {
-    "name": "alextimmer",
+    "name": "alextimmer"
   },
-  "description": "A collection of Claude skills, plugins, and subagents. Currently includes mbb-deck-plugin for building MBB-style management consulting presentations.",
+  "description": "A collection of Claude skills, plugins, and subagents. Includes mbb-deck-plugin (MBB-style management consulting presentations) and claude-memory-harness (project memory + hooks harness).",
   "plugins": [
     {
       "name": "mbb-deck-plugin",
@@ -25,7 +25,30 @@
         "executive"
       ],
       "author": {
-        "name": "alextimmer",
+        "name": "alextimmer"
+      },
+      "homepage": "https://github.com/alextimmer/claude-skills",
+      "repository": "https://github.com/alextimmer/claude-skills",
+      "license": "PolyForm-Noncommercial-1.0.0"
+    },
+    {
+      "name": "claude-memory-harness",
+      "source": "./plugins/claude-memory-harness",
+      "description": "Turn stateless Claude Code sessions into ones with a persistent lab notebook: CLAUDE.md standing instructions, dated + attributed .claude/rules project memory, and tested SessionStart/PreCompact/Stop hooks. Ships the 'memory-harness' skill — say 'install my harness' in any repo to copy, adapt, and verify the template there.",
+      "category": "workflow",
+      "keywords": [
+        "memory",
+        "project-memory",
+        "harness",
+        "hooks",
+        "claude-md",
+        "session-continuity",
+        "stop-hook",
+        "tdd",
+        "knowledge-persistence"
+      ],
+      "author": {
+        "name": "alextimmer"
       },
       "homepage": "https://github.com/alextimmer/claude-skills",
       "repository": "https://github.com/alextimmer/claude-skills",
