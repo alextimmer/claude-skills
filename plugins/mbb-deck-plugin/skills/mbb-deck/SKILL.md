@@ -1,21 +1,26 @@
 ---
 name: mbb-deck
-description: Use this skill whenever the user wants to create a presentation, deck, or slides in MBB / management consulting style (McKinsey, Bain, BCG style). Trigger on requests for "consulting deck", "strategy presentation", "executive briefing", "board deck", "MBB style", "pyramid principle", "management consulting deck", or whenever the user asks for slides that need a clear recommendation, action titles, MECE structure, or executive-level polish. Do not trigger for casual or creative presentations (kids' birthday slideshow, photo deck, casual class lecture).
+description: Use this skill whenever the user wants to create, improve, or review a presentation, deck, slides, or a one-pager in MBB / management consulting style (McKinsey, Bain, BCG style). Trigger on requests for "consulting deck", "strategy presentation", "executive briefing", "board deck", "MBB style", "pyramid principle", "management consulting deck", "slide writing", "action title", "review my deck/slides", "give feedback on this deck", or whenever the user asks for slides that need a clear recommendation, action titles, MECE structure, or executive-level polish. Covers both creating decks and reviewing existing ones. Do not trigger for casual or creative presentations (kids' birthday slideshow, photo deck, casual class lecture).
 ---
 
 # MBB-Style Presentation Skill
 
 Build presentations in the structural style of top-tier management consulting firms. The hallmarks: an answer-first storyline, action titles, MECE structure, and one idea per slide.
 
-## Seven core principles
+The skill has two modes: **create** (develop storyline and slides — the workflow below) and **feedback** (review a draft deck against the standard — use `/critique-deck` for content and storyline, the `qa-reviewer` subagent for production polish; both run the deterministic lint first).
+
+## Ten core principles
 
 1. **Answer first (Minto Pyramid).** State the recommendation up front, then the supporting arguments, then the evidence. The reader should know your conclusion from the executive summary slide.
 2. **Action titles, not topic titles.** Every slide title is a complete declarative sentence stating the takeaway. "Revenue grew 23% YoY, driven by enterprise" — not "Revenue Trends". The title alone should convey the insight.
-3. **One idea per slide.** If you can't summarize the slide in a single sentence, split it into two slides.
+3. **One idea per slide.** If you can't summarize the slide in a single sentence, split it into two slides. If content does not support that one message: **if in doubt, leave it out.**
 4. **MECE structure.** Categories must be Mutually Exclusive and Collectively Exhaustive. No overlap, no gaps.
 5. **Source everything.** Cite sources in a small footnote (typically ~9pt, gray) at the bottom-left of any data slide.
 6. **Action title + framing line**. Beneath the action title, add a short subtitle (~10–15 words) that states the logic, methodology, or sample size. Title says what's true; framing line says how we know. Examples: "Based on n=240 customer interviews", "Acme analysis vs. industry benchmark", "Excludes one-time charges".
 7. **Build data slides so they narrate themselves (McCandless).** Any chart or data slide must support a five-step read: (1) the chart can be named, (2) obvious questions are answered on the slide itself (axes, units, period, n), (3) the action title states the insight, (4) the specific data points proving the insight are visually highlighted (accent color on the relevant bar; gray on the rest), (5) the takeaway sets up the next slide. If a slide can't be talked through this way, the slide isn't done.
+8. **Every slide is a table.** Think of any layout as rows and columns (rows = items, columns = dimensions such as measure, rationale, impact, timing). This single principle produces clean, structured pages and prevents scattered elements. It is a rule of thumb — adjust when a chart or framework demands it.
+9. **Horizontal and vertical logic.** Read all action titles in sequence: they must tell the storyline of the document by themselves (horizontal logic). On each slide, the content must fully support its title (vertical logic). Both are tested explicitly during review.
+10. **Synthesize, do not summarize.** Slides state implications (the "So What"), not just organized facts. "We win 40% of negotiations" is a fact; "Negotiation conversion declined from 55% to 40%, likely driven by recent scaling of the sales team" is an insight.
 
 ## Agents and tools available in this plugin
 
@@ -28,7 +33,7 @@ This plugin ships several subagents that handle specific phases of the work. Sug
 - `cohort-analyzer` — turns customer data into retention curves, an activation insight, and 5 ranked changes spanning the customer lifecycle. Use when the deck is about customer behavior, retention, or LTV.
 - `market-basket-analyzer` — turns transaction data into association rules, 5 storefront changes, and a parameterized revenue model. Use when the deck is about cross-sell, bundling, or merchandising.
 
-The output of any of these agents becomes the analytical foundation of the deck — the agent's governing finding becomes the deck's governing thought.
+When any of these agents has run, adopt its output as the analytical foundation of the deck — its governing finding becomes the deck's governing thought.
 
 **Build-phase reviewers**:
 
@@ -82,11 +87,19 @@ List 10–15 action titles in sequence. Each title is a complete sentence. Readi
 
 Hand the storyline to the `storyline-reviewer` subagent. It returns a structured critique covering the governing thought, action titles, pyramid integrity, and MECE — without polluting this conversation with critique back-and-forth. Iterate on the storyline until the reviewer is satisfied, then proceed to Step 4.
 
-For decks that depend on data analysis, this is also where the analytical agents (`data-diagnostic`, `forecast-modeler`, `cohort-analyzer`, `market-basket-analyzer`) feed in. If the storyline is forecast-driven, the forecast-modeler's scenario range and decision triggers should already be in hand by Step 4 — they become the substance of the recommendation slides.
+For decks that depend on data analysis, this is also where the analytical agents (`data-diagnostic`, `forecast-modeler`, `cohort-analyzer`, `market-basket-analyzer`) feed in. If the storyline is forecast-driven and `forecast-modeler` has not run yet, run it now — its scenario range and decision triggers must be in hand by Step 4, where they become the substance of the recommendation slides.
 
 ### Step 4 — Build slide content as a structured JSON
 
-For each slide: write the action title first, then design the body to support that one claim. Capture the result as a structured JSON file matching `assets/storyline_schema.json`. A worked example lives in `examples/sample-storyline.json`.
+Build every slide in this order — never start with the visual or the text:
+
+1. **Message.** The one message of the slide, written down as the action title. If the message is not clear, the slide is not ready to be built.
+2. **Layout.** Choose the layout — in table format where applicable (rows = items, columns = dimensions). See the three layout archetypes in `references/slide-patterns.md`.
+3. **Main visual.** The centerpiece, typically the chart. Choose the chart type from the *message's comparison type*, not from the data shape (`references/visual-style.md`).
+4. **Supporting text.** Bullets, labels, callouts, takeaway box — parallel grammar, groups of at least 2, max 5 per box.
+5. **Polish.** Alignment, consistency, no jitter.
+
+Capture the result as a structured JSON file matching `assets/storyline_schema.json`. A worked example lives in `examples/sample-storyline.json`. Before finalizing any slide, run the **10-second executive test**: can a senior executive get the point in 10 seconds? Does the title tell them what to think? Could any element be removed without losing the message? Would you be comfortable if only the titles were read aloud?
 
 ### Step 5 — Validate the storyline
 
@@ -114,6 +127,8 @@ The storyline JSON is format-agnostic. The same storyline can be rendered four d
 
 **Option C — Native `.pptx` via an environment PowerPoint capability.** Covers whatever the host provides: the official Anthropic `pptx` skill (Claude Code: `/plugin install document-skills@anthropic-agent-skills`), claude.ai's built-in file creation, or Claude's PowerPoint add-in when working inside Office itself. Native renderers know nothing about MBB conventions — **always hand off the approved storyline together with the renderer handoff brief** from `references/output-formats.md` (style contract: typography, palette, chart rules, footers). Suggest this option when such a capability is available and Option D's requirements are not met.
 
+**Mandatory after ANY native render (Option C):** run the deterministic lint on the produced file — `python scripts/lint_deck.py output.pptx` — and fix what it flags before showing the deck to the user. Native renderers improvise typography and color; the lint is what makes the style contract enforceable rather than hoped-for. It runs wherever Python + `python-pptx` exist, including claude.ai's sandbox.
+
 **Option D — `.pptx` via the bundled Python script.** If the user has Python 3.9+ with `python-pptx` installed (see `scripts/REQUIREMENTS.md`), use `scripts/build_deck.py`:
 
 ```bash
@@ -128,11 +143,11 @@ See `references/output-formats.md` for a full decision guide and worked examples
 
 ### Step 7 — (Before sharing) Run production QA
 
-Hand the finished `.pptx` to the `qa-reviewer` subagent. It walks the production checklist (cover page, footers, formatting consistency, alignment, footnote/number conventions) and returns a pass/fail report with specific fixes. Address critical issues before sharing the deck externally.
+Hand the finished `.pptx` to the `qa-reviewer` subagent. It runs the deterministic lint (`scripts/lint_deck.py`) first — fonts, sizes, colors, bounds, jitter, page numbers, banned chart types are *measured*, not judged — then walks the judgment half of the production checklist (cover page, So-Whats, footnote conventions) and returns a pass/fail report with specific fixes. Address critical issues before sharing the deck externally.
 
 ### Step 8 — (Optional) Rehearse the live presentation
 
-For decks where the user will present live to an audience, the `chart-presenter` subagent generates a McCandless-method talking script for any data slide. Useful when the user has 30 seconds to 2 minutes per slide and needs to land the insight cleanly.
+When the user will present live to an audience, offer the `chart-presenter` subagent — it generates a McCandless-method talking script for any data slide. Useful when the user has 30 seconds to 2 minutes per slide and needs to land the insight cleanly.
 
 ## Choosing the right agent
 
@@ -178,6 +193,12 @@ For details on each slide type, see `references/slide-patterns.md`.
 - **Numbers in action titles that don't match the slide body.** Every number in the title must appear, identically, in the body.
 - **Inconsistent footnote markers, units, or number formats.** Pick one footnote symbol style (e.g., ¹) and one number/currency format (e.g., €1,412.84) and use it across the entire deck.
 - **Passive or vague recommendations.** "It might be worth considering" is not a recommendation. Use active voice with a clear subject and verb: "Acme should exit Segment C in Q3."
+- **Pie charts. Banned outright** — the skill author's hard rule (no exceptions for "components" messages). Say so when a user asks for one, and render share-of-whole messages as a stacked column or a sorted bar chart instead. The validator and the deck lint both enforce this.
+- **Clotheslines.** Long unordered lists of 5+ parallel items. Group them into labeled element groups (3 groups of 2 beat 1 list of 6) and consider a second dimension to turn the list into a table.
+- **Colored boxes behind standard text.** Fills behind body text add ink without information. Reserve darker/colored fills for hierarchically superior text (column and section headers) — and apply that treatment consistently across the hierarchy level.
+- **Single bullets and paragraph bullets.** A single bullet is not a list — write it as plain text. One idea per bullet, one line ideally, two lines maximum.
+- **General truths and absolute claims.** "Managing risk is important for success" says nothing; "all divisions fail to follow best practices" leaves no room for outliers. Titles state specific, falsifiable insights.
+- **Process narration.** Never "we conducted 15 interviews and learned a lot" — always what the interviews revealed. Focus on results, not process.
 
 ## Reference files and tools
 
@@ -194,7 +215,8 @@ For deeper detail on any topic, consult these files when relevant:
 Tools shipped with this skill (all optional — no rendering path is required):
 
 - `scripts/build_deck.py` — converts a storyline JSON into a styled `.pptx`. Requires Python 3.9+ and `python-pptx`.
-- `scripts/validate_storyline.py` — checks a storyline JSON against MBB rules. Run before `build_deck.py`.
+- `scripts/validate_storyline.py` — checks a storyline JSON against MBB rules (incl. title/number match, clotheslines, bullet discipline, chart taxonomy, the pie ban). Run before `build_deck.py`.
+- `scripts/lint_deck.py` — deterministic visual lint for ANY finished `.pptx` (fonts, sizes, colors, bounds, jitter, page numbers, banned charts). Mandatory after native renders (Option C); `--profile dense` checks against the dense consulting-print standard.
 - `scripts/REQUIREMENTS.md` — Python environment setup for the scripts above. Read before suggesting Option D.
 - `assets/storyline_schema.json` — JSON schema documenting the storyline format
 - `assets/palettes.json` — accent color palettes (navy / red / green / neutral) used by `build_deck.py`. Marp users can replicate these via inline CSS — see `references/marp-rendering.md`.

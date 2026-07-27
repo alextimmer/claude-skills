@@ -42,4 +42,5 @@
 
 <!-- Lessons seen only ONCE that may be durable. Promote into a dated decision
      above when the pattern reappears on a second date; prune when it doesn't.
-     Repetition makes a candidate, not a rule. -->
+     One sighting makes a candidate, never a rule; the second sighting on a
+     later date earns promotion. -->

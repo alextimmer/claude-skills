@@ -30,7 +30,8 @@ lab notebook: `CLAUDE.md` (standing instructions, TDD-mandatory), `.claude/rules
   overwritten — inspect first, merge deliberately, ask on conflict.
 - Unknown stays unknown — not observed ≠ absent. Never record unverified claims as
   fact in memory files; mark them unknown and date the observation.
-- Memory entries always use `## YYYY-MM-DD: Description [Agent Name]` headings.
+- When writing any memory entry, use a `## YYYY-MM-DD: Description [Agent Name]`
+  heading — attribution keeps multi-agent memory auditable.
 - After any hook change: re-run the self-test before claiming success ("written"
   does not equal "working" — premature-victory prevention).
 - The track-vs-exclude choice (commit the harness vs `.git/info/exclude`) is the

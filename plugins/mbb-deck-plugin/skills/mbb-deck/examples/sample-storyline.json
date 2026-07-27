@@ -29,16 +29,19 @@
       "type": "bullets",
       "title": "Growth has stalled at 3% for two years while three competitors have grown 25%+",
       "framing_line": "Based on Acme financials FY23–FY24 and competitor 10-K filings (n=3 peers)",
-      "bullets": [...
+      "bullets": [
+        "Acme revenue grew 3% in FY23 and 3% in FY24 — flat against a market growing 11% annually",
+        "The three largest competitors each grew 25%+ over the same period, gaining 6pp of combined share",
+        "The gap concentrates in enterprise accounts, where Acme win rates trail the leaders by 18pp"
       ],
-      "source": "..."
+      "source": "Acme financials FY23–FY24; competitor 10-K filings; team analysis"
     },
     {
       "type": "bullets",
       "title": "Growth has stalled at 3% for two years while three competitors have grown 25%+ by moving upmarket",
       "bullets": [
-        "Acme ARR has grown 3.1% in FY23 and 3.4% in FY24, versus a five-year average of 14%",
-        "Three named competitors have each crossed $300M ARR by adding enterprise tiers since 2023",
+        "Acme ARR has grown ~3% in both years (3.1% FY23, 3.4% FY24), versus a five-year average of 14%",
+        "Three named competitors have each grown 25%+ annually, crossing $300M ARR by adding enterprise tiers since 2023",
         "Net revenue retention has fallen from 118% to 102% over the same period",
         "Customer count has grown, but average contract value has compressed by 11%"
       ],
@@ -216,6 +219,7 @@
     {
       "type": "roadmap",
       "title": "Implementation in three phases over 18 months, with the SMB sunset starting in Q2 2026",
+      "framing_line": "18-month plan, Q2 2026 through H1 2027; owners per milestone in the appendix",
       "phases": [
         {
           "name": "Q2 2026 — Foundation",

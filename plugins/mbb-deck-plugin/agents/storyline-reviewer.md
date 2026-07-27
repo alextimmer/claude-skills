@@ -63,9 +63,15 @@ Also flag: any number in a title that doesn't appear in the slide body descripti
 - Are they collectively exhaustive (no missing major argument)?
 - Common gaps: feasibility, source of funding, risks, what happens if we don't act
 
-### Storyline read
+### Storyline read (horizontal logic)
 
-Read only the action titles top-to-bottom. Can a board member grasp the recommendation and rationale without seeing any slide bodies? If not, the storyline is broken.
+Read only the action titles top-to-bottom — the **titles-only read**. Can a board member grasp the recommendation and rationale without seeing any slide bodies? If not, the storyline is broken (weak *horizontal logic*). Report exactly where the story breaks.
+
+Also check **vertical logic** slide-by-slide where bodies exist: does each slide's planned content fully support its own title — nothing missing, nothing that belongs to another title?
+
+### Leading references (for sectioned decks)
+
+If the storyline introduces a framework on a structure page, the following action titles should *start with the words introduced there*, so slides visibly attach to the framework. Flag titles that orphan themselves from the structure; also flag any transition where the audience would wonder why the next page follows, and any section that ends by introducing new information — every slide transition should feel inevitable.
 
 ## Output format
 

@@ -68,7 +68,7 @@ The user can copy each slide block into PowerPoint or Keynote one slide at a tim
 
 See `references/marp-rendering.md` for the complete guide on translating storyline JSON to Marp markdown — frontmatter, slide patterns, columns, images, themes, and all the syntax conventions.
 
-Marp is the right choice when the user wants:
+Choose Marp when the user wants:
 - Version-controlled decks (markdown diffs cleanly in git)
 - Quick HTML or PDF export via Marp CLI or the VS Code extension
 - The same source file rendering to multiple targets

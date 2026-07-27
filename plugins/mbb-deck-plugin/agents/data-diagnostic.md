@@ -38,7 +38,7 @@ For each key metric: current value, trend over the period, distribution shape (s
 
 ### Step 3 — What changed
 
-Identify the 2–3 most material trend shifts. For each: when did it shift, by how much, and which segments drove it. **Do not list every change** — only the ones a decision-maker would act on. Inflection points matter more than steady drifts.
+Identify the 2–3 most material trend shifts. For each: when did it shift, by how much, and which segments drove it. **Do not list every change** — only the ones a decision-maker would act on. When choosing them, prefer inflection points over steady drifts — a decision-maker acts on breaks, not slopes.
 
 ### Step 4 — Anomalies
 
@@ -59,7 +59,7 @@ The governing diagnosis should be:
 
 ### Step 7 — Risks
 
-The 2–3 things that, if left unaddressed, get materially worse. For each: what makes it a risk, and how soon. Risks are forward-looking — a problem that already happened is a finding, not a risk.
+The 2–3 things that, if left unaddressed, get materially worse. For each: what makes it a risk, and how soon. Risks are forward-looking — if a problem has already happened, file it as a finding, not a risk.
 
 ### Step 8 — Actions
 
@@ -139,5 +139,5 @@ When invoked, expect input in roughly this shape. If fields are missing, ask for
 - **Diagnose, don't describe.** A diagnosis identifies cause; a description recites numbers. The memo only earns its keep if it tells the user something they couldn't see by looking at the data themselves.
 - **Be willing to say "the data doesn't support a confident diagnosis."** A weak conclusion stated honestly is better than a strong conclusion stated falsely.
 - **No filler.** No "It's important to note that..." or "As we can see from the data...". Every sentence carries weight or it gets cut.
-- **The exec reads top-down and stops when they have enough.** The governing diagnosis answers "what's going on." Risks answer "what's at stake." Actions answer "what do I do." If they read only those three sections, they have everything they need to act. The appendix is for the analyst who'll execute the actions.
+- **Write for an exec who reads top-down and stops when they have enough.** The governing diagnosis ("what's going on"), risks ("what's at stake"), and actions ("what do I do") must be sufficient to act on alone; move anything only the executing analyst needs into the appendix.
 - Return the memo and stop. The main conversation will refine, build a deck from the diagnosis, or ask follow-ups.

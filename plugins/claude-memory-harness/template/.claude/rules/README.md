@@ -16,22 +16,23 @@ need to reference these files or ask Claude to read them — they are always pre
 
 - **Everything here is paid for in every session's context budget.** Keep entries as
   signal, not noise. Prune stale session entries; promote durable lessons to decisions.
-- **Every entry gets a dated, attributed heading:** `## YYYY-MM-DD: Description [Agent]`
-  (see `memory-attribution.md`).
+- **When writing any entry, give it a dated, attributed heading:** `## YYYY-MM-DD:
+  Description [Agent]` (see `memory-attribution.md`) — the tag keeps a multi-agent
+  workspace auditable.
 - **Unknown stays unknown — not observed ≠ absent.** Never record an unverified claim
   as fact; mark it unknown/unverified and date the observation. This is what keeps
   `memory-decisions.md` trustworthy over time.
 - **Add files freely** — any new `*.md` here also auto-loads. Keep the count small and
   purposeful (modular instruction design beats one monolithic instruction sheet, but
   every file costs context).
-- **`memory-decisions.md` has two extra sections:** "Ruled out" (dead ends actually
-  tried, with the WHY — what stops future sessions from re-attempting them) and
-  "Candidates (unconfirmed)" (one-sighting lessons; promote on the second date they
-  reappear, prune otherwise).
-- **Size caps on `memory-sessions.md`** (180 lines / 32 KB / 3000 chars-per-line):
-  the SessionStart hook flags a breach and the PreCompact hook enforces it before
-  compaction — prune and promote instead of raising the caps. The log is a note,
-  not a transcript.
+- **When an approach was actually tried and failed,** record it in
+  `memory-decisions.md` "Ruled out" with the WHY — that is what stops future
+  sessions from re-attempting it. **When a lesson has been sighted only once,**
+  park it under "Candidates (unconfirmed)"; promote it on the second date it
+  reappears, prune it otherwise.
+- **If `memory-sessions.md` breaches its size caps** (180 lines / 32 KB / 3000
+  chars-per-line — flagged at SessionStart, enforced at PreCompact): prune and
+  promote entries instead of raising the caps. The log is a note, not a transcript.
 
 ## Coexisting with other agents
 

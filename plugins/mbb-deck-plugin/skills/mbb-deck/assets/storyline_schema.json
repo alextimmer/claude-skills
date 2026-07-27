@@ -479,6 +479,21 @@
           "type": "string",
           "description": "Optional subtitle under the action title — typically methodology, sample size, or logic ('Based on n=240 interviews', 'Acme analysis vs. industry')"
         },
+        "comparison_type": {
+          "type": "string",
+          "enum": [
+            "components",
+            "items",
+            "time_series",
+            "distribution",
+            "correlation"
+          ],
+          "description": "The comparison type of the MESSAGE (not the data shape). Drives the chart-type check in validate_storyline.py: components → stacked column/sorted bar; items → bar/waterfall; time_series → line/column; distribution → column/histogram/line; correlation → scatter/bubble/paired bars."
+        },
+        "chart_type": {
+          "type": "string",
+          "description": "Intended chart type (e.g. 'waterfall', 'sorted_bar', 'line', 'scatter'). NOTE: 'pie' is banned in this skill — the skill author's hard rule; components render as stacked columns or sorted bars."
+        },
         "placeholder_text": {
           "type": "string"
         },

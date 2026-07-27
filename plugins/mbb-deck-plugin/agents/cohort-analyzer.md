@@ -220,5 +220,5 @@ When invoked, expect input in roughly this shape. **Retention definition and dec
 - **Averages lie. Cohorts tell the truth.** The whole reason for this analysis is that aggregate retention numbers hide divergent sub-performance. Lead with the divergence, not the average.
 - **The activation insight earns its keep or the analysis hasn't done its job.** If you can't identify a specific early behavior that predicts retention, say what's missing in the data so the user can instrument it.
 - **Five is enough.** Don't pad. Don't hedge. Each change should be specific enough that a PM or operator can put it in next week's plan.
-- **The operator reads top-down and stops when they have enough.** Activation insight answers "what's actually driving retention." Five changes answer "what do I do." If they read only those two sections, they have everything they need to act.
+- **Write for an operator who reads top-down and stops when they have enough.** The activation insight ("what's actually driving retention") and the five changes ("what do I do") must be sufficient to act on alone.
 - Return the memo and stop. The main conversation will refine, build a deck from the analysis, or ask follow-ups.

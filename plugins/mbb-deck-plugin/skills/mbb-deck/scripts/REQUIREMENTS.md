@@ -1,6 +1,6 @@
-# Requirements for `build_deck.py` and `validate_storyline.py`
+# Requirements for `build_deck.py`, `validate_storyline.py`, and `lint_deck.py`
 
-The Python scripts in this folder are **optional**. If you don't have a Python environment, use one of the other rendering options described in `references/output-formats.md` (Markdown outline, Marp markdown, or the PowerPoint Claude plugin).
+The Python scripts in this folder are **optional**. If you don't have a Python environment, use one of the other rendering options described in `references/output-formats.md` (Markdown outline, Marp markdown, or an environment PowerPoint capability). On **claude.ai**, none of this setup is needed — Python and `python-pptx` are preinstalled in the code-execution sandbox and these scripts run there directly.
 
 ## What's needed
 
@@ -69,6 +69,10 @@ python3 scripts/build_deck.py examples/sample-storyline.json --out output.pptx
 
 # Override the palette
 python3 scripts/build_deck.py examples/sample-storyline.json --out output.pptx --palette red
+
+# Lint ANY finished .pptx (mandatory after native renders; needs python-pptx)
+python3 scripts/lint_deck.py output.pptx
+python3 scripts/lint_deck.py output.pptx --profile dense   # consulting print density
 ```
 
 The validator should be run before the builder — it catches structural issues that produce broken decks (missing fields, topic titles, MECE violations).

@@ -75,7 +75,7 @@ fi
 # Seeded-memory honesty (adapted from hung12ct/culi): an empty/seeded memory must be
 # distinguishable from an unaware one, or the model over-trusts the silence.
 if grep -q '<Example' .claude/rules/memory-decisions.md .claude/rules/memory-sessions.md 2>/dev/null; then
-  echo "Memory note: the memory files still contain only the seed example — nothing has been recorded yet. Empty memory means 'nothing recorded', not 'nothing to know': trust the code, not the silence."
+  echo "Memory note: the memory files still contain only the seed example — nothing has been recorded yet. When memory is silent on a topic, verify against the code instead of assuming there is nothing to know; when you record the first real entry, delete the seed example."
 fi
 
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then

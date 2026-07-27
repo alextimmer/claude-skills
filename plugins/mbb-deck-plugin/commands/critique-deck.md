@@ -9,6 +9,17 @@ You are reviewing a presentation against MBB-style principles. The user has prov
 
 Read the deck (use the `pptx` skill if available to extract slide content), then produce a structured critique. Be direct — consultants critique decks frankly, not gently.
 
+If Python with `python-pptx` is available, first run the deterministic lint and treat its output as measured fact: `python <skill>/scripts/lint_deck.py <deck.pptx>`.
+
+Run these six named tests, in order:
+
+1. **Titles-only read** — read only the action titles in sequence; report where the storyline breaks (horizontal logic).
+2. **Title–content match** — check every number in a title against the slide body (vertical logic).
+3. **Clothesline scan** — flag any slide with 5+ ungrouped parallel elements.
+4. **Chart fit** — for each chart, name the comparison type of the *message* and check the chart type matches (components → stacked column/sorted bar — pie charts are banned outright in this skill; items → bar/waterfall; time → line/column; distribution → histogram; correlation → scatter/bubble).
+5. **Density check** — the 90-second rule and the squint test per slide.
+6. **Checklist run** — the violations against the production checklist (or note that `qa-reviewer` will run it).
+
 ## What to review
 
 ### 1. Storyline (most important)

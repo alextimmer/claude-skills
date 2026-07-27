@@ -29,5 +29,22 @@
     "footer_height_in": 0.3,
     "footer_y_offset_in": 0.2
   },
+  "profiles": {
+    "_note": "Alternative typography profiles. The default values above are the 'presentation readability' standard. To use a profile, copy its values over typography.* (build_deck.py reads the top-level typography block); lint_deck.py accepts --profile to check a finished deck against a profile's size expectations.",
+    "dense": {
+      "_description": "Consulting print density (Firm Learning standard): decks meant to be READ like documents, not projected. Title 18-22pt, body 8-11pt, footnotes 7-8pt.",
+      "action_title_pt": 20,
+      "framing_line_pt": 10,
+      "subtitle_pt": 12,
+      "body_pt": 10,
+      "bullet_pt": 10,
+      "footnote_pt": 8,
+      "exec_summary_title_pt": 18,
+      "exec_summary_point_pt": 10,
+      "title_slide_main_pt": 28,
+      "title_slide_subtitle_pt": 16,
+      "title_slide_meta_pt": 10
+    }
+  },
   "sample_data_note": "These values are tuned for a 16:9 widescreen layout (13.333 x 7.5 in). Adjust if your default slide size differs."
 }

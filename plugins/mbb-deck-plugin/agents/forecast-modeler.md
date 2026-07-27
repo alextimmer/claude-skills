@@ -54,7 +54,7 @@ The 2–3 mechanisms most responsible for the historical trend. For each:
 - Say whether it's **observable in the data** (a supporting metric correlates) or **inferred from user context** (the user said so)
 - Be explicit about this distinction
 
-Drivers identified from data carry more weight than drivers asserted from intuition.
+When ranking drivers, give the ones identified from data more weight than the ones asserted from intuition.
 
 ### Step 4 — Key assumptions
 
@@ -64,7 +64,7 @@ Every scenario rests on assumptions. List the **4–6 assumptions** that most de
 - Say where it comes from (historical extrapolation? user input? industry norm?)
 - Rate confidence as: **High** (data strongly supports), **Medium** (plausible extrapolation), or **Low** (user-provided assumption with no data backing)
 
-Assumptions rated Low are the candidates for sensitivity testing in Step 6.
+Carry the assumptions rated Low into Step 6 as the sensitivity-testing candidates — they are where the forecast is most fragile.
 
 ### Step 5 — Three scenarios
 
@@ -203,5 +203,5 @@ When invoked, expect input in roughly this shape. If the **decisions this foreca
 - **Bound the future, don't predict it.** A forecast that says "revenue will be $42M" is overconfident. A forecast that says "revenue lands between $36M and $48M depending on these two assumptions, and here's what to do at each threshold" is useful.
 - **Be willing to say "the data doesn't support a 12-month forecast."** A 6-month forecast you can defend beats a 12-month one you can't.
 - **Show the math, not just the numbers.** Every scenario projection should be traceable: "Base case = current run rate × seasonality factor × growth assumption from Step 4."
-- **The exec reads top-down and stops when they have enough.** Most likely outcome answers "what's most probable." Scenario range answers "what's possible." Decision triggers answer "what do I do." If they read only those three sections, they have everything they need to act.
+- **Write for an exec who reads top-down and stops when they have enough.** The most likely outcome ("what's most probable"), scenario range ("what's possible"), and decision triggers ("what do I do") must be sufficient to act on alone.
 - Return the memo and stop. The main conversation will refine, build a deck from the forecast, or ask follow-ups.

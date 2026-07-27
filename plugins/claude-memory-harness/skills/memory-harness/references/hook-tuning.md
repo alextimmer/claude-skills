@@ -14,22 +14,22 @@ row), a `$TMPDIR` marker (once per session), and the already-updated check.
 
 ### Tuning `STRONG_PATTERNS`
 
-- Patterns are **phrases, not bare words**, where a bare word collides with code
-  vocabulary: `fixed (the|a|an|it|this)` instead of `fixed` — a repo full of
-  `FixedWidth`/`fixed-width` identifiers proved why.
+- Write a pattern as a **phrase, not a bare word**, whenever the bare word collides
+  with code vocabulary: `fixed (the|a|an|it|this)` instead of `fixed` — a repo full
+  of `FixedWidth`/`fixed-width` identifiers proved why.
 - Before adding a word, grep the repo for it (`grep -ric <word> .`); if it appears
   in identifiers, paths, or docs, phrase-ify it or leave it out.
 - NEVER add phrases true of every healthy session in the repo's workflow
   (`all tests pass`, `new test`, `TDD` in a TDD-mandated repo) — with a blocking
   hook they are pure nag and destroy the signal.
-- The grep intentionally covers only genuine user/assistant lines and excludes
-  `system-reminder` lines (those embed CLAUDE.md + the memory files, which are full
-  of trigger words).
-- The correction-signal tier (`not what (i|we) (asked|meant|wanted)`, `i told you`,
-  `doesn.t want to proceed`, `interrupted by user`, the `"text":"(no|wait),` message
-  opener) detects user pushback — the strongest lesson signal. The opener pattern is
-  JSON-anchored on purpose: "no" mid-text is ordinary prose; "No, ..." opening a
-  message is a correction.
+- When editing the transcript grep, keep it restricted to genuine user/assistant
+  lines and keep the `system-reminder` exclusion — those lines embed CLAUDE.md + the
+  memory files, which are full of trigger words (guaranteed false positives).
+- When pruning or loosening patterns, keep the correction-signal tier (`not what
+  (i|we) (asked|meant|wanted)`, `i told you`, `doesn.t want to proceed`,
+  `interrupted by user`, the `"text":"(no|wait),` message opener) and keep the
+  opener JSON-anchored — user pushback is the strongest lesson signal, and "no"
+  mid-text is ordinary prose while "No, ..." opening a message is a correction.
 
 ### If the reminder fires too often / never
 
@@ -50,8 +50,9 @@ deliberately — they are the rolling log's decay mechanism.
 
 Blocks compaction ONCE per session when `memory-sessions.md` is stale (>120 s) or
 over its caps, so the model saves/prunes while details are still in context. Tuning
-knobs: the 120 s freshness window and the same three caps (keep them identical to
-the SessionStart audit). The once-per-session marker is the anti-wedge guarantee —
+knobs: the 120 s freshness window and the three caps — if you change any of them,
+change them in BOTH `pre-compact.sh` and `session-context.sh`'s audit; the two must
+stay identical. The once-per-session marker is the anti-wedge guarantee —
 do not remove it: auto-compaction fires when context is FULL, and an unconditional
 block could wedge the session.
 

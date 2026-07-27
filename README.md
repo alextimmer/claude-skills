@@ -81,9 +81,10 @@ Installing the plugin adds the *installer* — your repos stay untouched until y
 **What you get:**
 
 - 🗂️ **`/storyline`** — develop a Pyramid-Principle storyline before any slide is written
-- 🔍 **`/critique-deck`** — structured critique of an existing deck
+- 🔍 **`/critique-deck`** — structured critique of an existing deck (six named review tests)
 - 🤖 **Seven subagents** — including `storyline-reviewer` and `qa-reviewer` for adversarial review passes
-- 🎨 **A complete skill** — slide patterns, visual style rules, palettes, icons, and a `build_deck.py` renderer
+- 🎨 **A complete skill** — slide patterns, visual style rules, palettes (plus a dense consulting-print profile), icons, and a `build_deck.py` renderer
+- ✅ **Deterministic enforcement** — a storyline validator that auto-runs via hook the moment a storyline JSON is written, and `lint_deck.py`, which mechanically checks any finished `.pptx` (fonts, sizes, colors, alignment, page numbers — and the hard pie-chart ban) regardless of which renderer produced it
 
 Also usable on **Claude.ai** — see below.
 

@@ -30,7 +30,8 @@ workspace — the tag keeps memory auditable). Lead with the insight, then detai
 - Skip: quick factual questions, trivial tasks with no new info.
 - **Unknown stays unknown — not observed ≠ absent.** Never record an unverified
   claim as fact; mark it unknown/unverified and date the observation.
-- Optional idiom for decisions: end with a "Remaining accepted risk:" line.
+- When a decision knowingly leaves a risk unmitigated, end the entry with a
+  "Remaining accepted risk:" line (optional idiom).
 
 ## The quality bar — what deserves recording
 
@@ -61,7 +62,8 @@ workspace — the tag keeps memory auditable). Lead with the insight, then detai
   future sessions from re-attempting known dead ends.
 - **Candidates (unconfirmed)** — lessons seen only once that MAY be durable.
   Promote into a dated decision when the pattern reappears on a second date;
-  prune when it doesn't. Repetition makes a candidate, not a rule.
+  prune when it doesn't. One sighting makes a candidate, never a rule; the second
+  sighting on a later date earns promotion.
 
 ## Pruning / auditing (do this deliberately, with the user)
 

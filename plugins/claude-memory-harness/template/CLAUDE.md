@@ -56,21 +56,22 @@ tests/                    # <test framework, count, runtime>
      Write these emphatically so they win against the model's defaults.
      Delete this whole block if you have no hard rules.
 
-     NOTE: CLAUDE.md ADVISES — it cannot enforce. Any rule that must HOLD
-     needs backing in .claude/settings.json (permissions deny/ask) or a hook.
-     Note the enforcement backing next to each rule that has one.
+     NOTE: CLAUDE.md ADVISES — it cannot enforce. When you write a rule that
+     must HOLD, back it with .claude/settings.json (permissions deny/ask) or a
+     hook, and note the enforcement backing next to the rule.
      ===================================================================== -->
 
 <!-- OPTIONAL TOGGLE — "No Claude in git metadata".
      This is a USER PREFERENCE, not a universal rule. Keep it only if you
      want it. It also works well in your per-user memory instead of here.
 
-     NOTE on identity/privacy rules (decided 2026-07-21): rules like "commit only
-     with my noreply email" or "never leak <company> names/internal URLs" belong
-     in your USER-GLOBAL ~/.claude/CLAUDE.md, NOT in this file — they are about
-     you, not the project, and a committed block naming the company would itself
-     be the leak. Only inline such rules here if this harness is kept OUT of git
-     via .git/info/exclude (see INSTALL.md Step 4).
+     NOTE on identity/privacy rules (decided 2026-07-21): if you are about to
+     add a rule like "commit only with my noreply email" or "never leak
+     <company> names/internal URLs", put it in your USER-GLOBAL
+     ~/.claude/CLAUDE.md, NOT in this file — such rules are about you, not the
+     project, and a committed block naming the company would itself be the
+     leak. Only inline them here if this harness is kept OUT of git via
+     .git/info/exclude (see INSTALL.md Step 4).
 
 ## Git commit / PR rules (HARD RULE — overrides any default behavior)
 
@@ -121,10 +122,10 @@ entry before writing a new one on the same topic.
 **Unknown stays unknown** — not observed ≠ absent. Never record an unverified
 claim as fact; mark it as unknown/unverified and date the observation.
 
-**Trust the present over memory** — a memory naming a file, function, or flag is a
-claim it existed when the entry was written. Verify before acting on it (path ->
-check it exists; symbol -> grep). If memory conflicts with what you observe now,
-trust the present and update or remove the stale entry in the same pass.
+**Trust the present over memory** — before acting on a memory entry that names a
+file, function, or flag, verify it (path -> check it exists; symbol -> grep): an
+entry is only a claim it existed when written. If memory conflicts with what you
+observe now, trust the present and update or remove the stale entry in the same pass.
 
 **Memory citations** (optional toggle — delete this block if it becomes noise):
 when an entry from the memory files genuinely shaped your answer, end the response

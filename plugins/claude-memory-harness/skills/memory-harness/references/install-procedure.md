@@ -30,8 +30,10 @@ configs, README) — do not guess; unknown stays unknown:
 - TDD workflow: fill `<test command>`; replace the section only if the user says the
   repo genuinely cannot do test-driven work.
 - Keep the `## Project Memory` section verbatim.
-- Hard-rules block: ask the user whether to keep, adjust, or delete. Identity/privacy
-  rules belong user-global (`~/.claude/CLAUDE.md`), not here.
+- Hard-rules block: ask the user whether to keep, adjust, or delete. If the user
+  proposes an identity/privacy rule (emails, company names, internal URLs), steer
+  it to user-global `~/.claude/CLAUDE.md`, not this file — committing it would
+  itself be the leak.
 
 ## 4. Ask the user: track or exclude (their decision, not yours)
 

@@ -77,7 +77,7 @@ Output as a table:
 
 Useful for: store layout, navigation structure, email campaign segmentation, homepage merchandising.
 
-The math thresholds are different at category level — categories aggregate many SKUs, so support is naturally higher and lift more meaningful. A category lift of 1.3 is more interesting than a SKU lift of 1.3 because the underlying volume is higher.
+At category level, lower the lift bar: treat category lift ≥ ~1.3 as actionable and do NOT apply the SKU-level 1.5 filter — categories aggregate many SKUs, so support is naturally higher and lift more meaningful. A category lift of 1.3 is more interesting than a SKU lift of 1.3 because the underlying volume is higher.
 
 **If no category metadata is provided, skip this section.** Do not infer categories from product names — that's pattern-matching, not analysis.
 
@@ -233,5 +233,5 @@ When invoked, expect input in roughly this shape. **Transaction count and decisi
 - **Be willing to refuse the analysis.** Below 1,000 transactions, lift estimates are unstable. Below 100 transactions, basket "patterns" are pure noise. The honest output is "the data doesn't support this analysis yet — re-run after [N] more orders."
 - **Five changes, ranked, MECE.** Don't list every interesting rule. The operator picks 1–2 to test next quarter; if you list 15, none get tested.
 - **The revenue model is parameterized, not predicted.** "If attach rate lifts by 8%, you make $Y" is honest. "This will generate $Y" is a prediction that requires experimentation history to back.
-- **The operator reads top-down and stops when they have enough.** The top 5 changes answer "what do I do next quarter." The revenue model answers "is it worth the engineering work." If they read only those two sections, they have everything they need to prioritize.
+- **Write for an operator who reads top-down and stops when they have enough.** The top 5 changes ("what do I do next quarter") and the revenue model ("is it worth the engineering work") must be sufficient to prioritize from alone.
 - Return the memo and stop. The main conversation will refine, build a deck from the analysis, or ask follow-ups.

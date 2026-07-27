@@ -18,7 +18,15 @@ A path to a `.pptx` file (or, if the user has tooling installed, the extracted s
 
 ## The QA checklist
 
-Walk through every category. For each item, mark ✓ (pass), ✗ (fail), or ~ (partial / inconsistent). When ✗ or ~, give the specific slide number and the specific fix.
+### 0. Run the deterministic lint FIRST (measure before judging)
+
+```bash
+python <skill>/scripts/lint_deck.py <deck.pptx>            # or --profile dense
+```
+
+It mechanically verifies: one font family, body-size convergence, chromatic-color count per slide, shapes out of bounds, title/page-number jitter, double spaces, page-number presence, and banned chart types (pie/doughnut = ERROR — the skill author's hard rule; 3D = warning). Fold its findings into your report as pre-verified facts (cite them as "measured"), then spend your judgment ONLY on what the lint cannot score. If Python is unavailable in this environment, note that the lint was skipped and check those items manually.
+
+Walk through every category below. For each item, mark ✓ (pass), ✗ (fail), or ~ (partial / inconsistent). When ✗ or ~, give the specific slide number and the specific fix.
 
 ### 1. Cover page
 
@@ -74,11 +82,15 @@ Walk through every category. For each item, mark ✓ (pass), ✗ (fail), or ~ (p
 ### 8. Visual quality
 
 - [ ] No 3D charts, gradients, drop shadows, or decorative effects
+- [ ] **No pie or doughnut charts anywhere** (hard ban — the lint flags these as ERROR)
 - [ ] No stock photography or clip-art
-- [ ] Consistent font (one body font, one title font, no surprise substitutions)
-- [ ] Consistent accent color (one accent — not mixed navy/red/green within one deck)
+- [ ] Consistent font (one family; one size for all body text — only action title and footnotes differ)
+- [ ] Consistent accent color (one accent — not mixed navy/red/green within one deck); max three colors in active use per slide
+- [ ] No colored background boxes behind standard text (fills reserved for hierarchically superior headers, applied consistently across the level)
 - [ ] Charts highlight the data point that matters; non-emphasized series are gray
 - [ ] Whitespace is generous — no slide feels crammed
+- [ ] **Clothesline scan:** no slide with 5+ ungrouped parallel elements (group and label)
+- [ ] **Density:** the 90-second rule (readable in ≤90s) and the squint test (most important element obvious when squinting); nothing below 8pt; appendix slides may be denser
 
 ### 9. File-level
 

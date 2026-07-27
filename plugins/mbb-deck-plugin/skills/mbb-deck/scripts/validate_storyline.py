@@ -170,6 +170,104 @@ def validate_action_title(title: str, location: str, issues: list[Issue]):
             f"title '{t}' is long ({len(t.split())} words); aim for a single readable sentence"
         ))
 
+    # Check 7: likely exceeds two rendered lines (~65 chars/line at title size).
+    # "Maximum 2 lines. Cut filler words until it fits." (Firm Learning rule)
+    if len(t) > 130:
+        issues.append(Issue(
+            "WARNING", location,
+            f"title is {len(t)} characters — likely renders beyond two lines; "
+            "cut filler words until it fits (max 2 lines)"
+        ))
+
+
+# Numeric tokens like 23%, 1,412.84, 40, FY27 — used for title/body match.
+NUM_TOKEN = re.compile(r"\d[\d.,]*%?")
+
+# Slide types whose data lives OUTSIDE the JSON (rendered chart), so numbers
+# in the title legitimately may not appear in the JSON body.
+CHART_TYPES = {"chart", "chart_placeholder"}
+
+
+def validate_title_numbers(slide: dict, loc: str, issues: list[Issue]):
+    """Every number in the action title must appear, identically, in the body.
+
+    (Firm Learning + our anti-pattern list; here made mechanical.) Skipped for
+    chart slides — their data lives in the rendered chart, not the JSON.
+    """
+    stype = slide.get("type")
+    # exec_summary is exempt: its title is the governing thought, whose numbers
+    # are proven by the deck's later slides, not by the one-page summary body.
+    if stype in CHART_TYPES or stype in (
+        "title", "quote", "section", "section_divider", "exec_summary"
+    ):
+        return
+    title = slide.get("title", "") or ""
+    tokens = {t.rstrip(".,") for t in NUM_TOKEN.findall(title)}
+    tokens.discard("")
+    if not tokens:
+        return
+    body = {k: v for k, v in slide.items() if k not in ("title", "type")}
+    body_text = json.dumps(body, ensure_ascii=False)
+    missing = sorted(tok for tok in tokens if tok not in body_text)
+    if missing:
+        issues.append(Issue(
+            "WARNING", loc,
+            f"number(s) {missing} appear in the title but not in the slide body — "
+            "every number in the title must appear, identically, in the body"
+        ))
+
+
+# Sub-bullet markers embedded in a flat bullet string.
+SUB_BULLET_PREFIX = re.compile(r"^\s*[-•·]\s")
+
+# Chart taxonomy: choose the chart from the comparison type of the MESSAGE.
+# NOTE the deliberate omission of "pie" everywhere: pie charts are banned in
+# this skill (the skill author's hard rule) — for components use a stacked
+# column or a sorted bar chart.
+COMPARISON_CHART_MAP = {
+    "components": {"stacked_column", "stacked_bar", "100_stacked", "sorted_bar", "column", "bar"},
+    "items": {"bar", "sorted_bar", "column", "waterfall"},
+    "time_series": {"line", "column"},
+    "distribution": {"column", "histogram", "line"},
+    "correlation": {"scatter", "bubble", "paired_bar"},
+}
+
+PIE_MENTION = re.compile(r"\bpie\b|\bdoughnut\b|\bdonut\b", re.IGNORECASE)
+
+
+def validate_chart_taxonomy(slide: dict, loc: str, issues: list[Issue]):
+    """comparison_type / chart_type consistency + the pie ban."""
+    ctype = slide.get("chart_type")
+    comp = slide.get("comparison_type")
+
+    if ctype and ctype.lower().replace(" ", "_") in ("pie", "doughnut", "donut", "pie_chart"):
+        issues.append(Issue(
+            "ERROR", loc,
+            "pie charts are banned in this skill (the skill author's hard rule) — "
+            "for a components/share-of-whole message use a stacked column or a sorted bar chart"
+        ))
+    if comp:
+        if comp not in COMPARISON_CHART_MAP:
+            issues.append(Issue(
+                "ERROR", loc,
+                f"unknown comparison_type '{comp}'; choose from {sorted(COMPARISON_CHART_MAP)}"
+            ))
+        elif ctype and ctype.lower().replace(" ", "_") not in COMPARISON_CHART_MAP[comp]:
+            issues.append(Issue(
+                "WARNING", loc,
+                f"chart_type '{ctype}' does not fit comparison_type '{comp}' — "
+                f"expected one of {sorted(COMPARISON_CHART_MAP[comp])}; "
+                "choose the chart from the message's comparison type, not the data shape"
+            ))
+    for field in ("placeholder_text", "caption"):
+        text = slide.get(field, "") or ""
+        if PIE_MENTION.search(text):
+            issues.append(Issue(
+                "WARNING", f"{loc}.{field}",
+                "mentions a pie/doughnut chart — pie charts are banned in this skill "
+                "(the skill author's hard rule); use a stacked column or sorted bar instead"
+            ))
+
 
 def validate_slides(slides: list, issues: list[Issue]):
     if not isinstance(slides, list) or not slides:
@@ -258,16 +356,45 @@ def validate_slide(slide: dict, loc: str, issues: list[Issue]):
 
     elif stype == "bullets":
         bullets = slide.get("bullets", [])
-        if not isinstance(bullets, list) or len(bullets) < 2:
+        if isinstance(bullets, list) and len(bullets) == 1:
+            issues.append(Issue(
+                "WARNING", loc,
+                "a single bullet is not a list — write it as plain text instead "
+                "(bullets always come in groups of at least 2)"
+            ))
+        elif not isinstance(bullets, list) or len(bullets) < 2:
             issues.append(Issue(
                 "WARNING", loc,
                 "bullets slide should have at least 2 bullets"
             ))
+        if isinstance(bullets, list) and len(bullets) == 5:
+            issues.append(Issue(
+                "INFO", loc,
+                "5 parallel bullets — consider grouping into labeled element groups "
+                "(3 groups of 2 beat 1 list of 6; no clotheslines)"
+            ))
         if isinstance(bullets, list) and len(bullets) > 5:
             issues.append(Issue(
                 "WARNING", loc,
-                f"{len(bullets)} bullets — cap at 5; if you need more, split into two slides"
+                f"{len(bullets)} bullets is a clothesline — group them into labeled "
+                "element groups or split into two slides (cap: 5)"
             ))
+        if isinstance(bullets, list):
+            for j, b in enumerate(bullets):
+                if not isinstance(b, str):
+                    continue
+                if len(b) > 160:
+                    issues.append(Issue(
+                        "WARNING", f"{loc}.bullets[{j}]",
+                        f"bullet is {len(b)} characters — one idea per bullet, "
+                        "one line ideally, two lines maximum"
+                    ))
+                if SUB_BULLET_PREFIX.match(b):
+                    issues.append(Issue(
+                        "INFO", f"{loc}.bullets[{j}]",
+                        "bullet embeds a sub-bullet marker — use at most one level "
+                        "of sub-bullets, or split the slide"
+                    ))
 
     elif stype == "mece_buckets":
         buckets = slide.get("buckets", [])
@@ -344,6 +471,13 @@ def validate_slide(slide: dict, loc: str, issues: list[Issue]):
                 f"value chain has {len(steps)} steps; 3–6 is typical"
             ))
 
+    # Numbers in the title must appear in the body (mechanical check)
+    validate_title_numbers(slide, loc, issues)
+
+    # Chart taxonomy + pie ban
+    if stype in CHART_TYPES:
+        validate_chart_taxonomy(slide, loc, issues)
+
     # Source check for data slides
     if stype in ("bullets", "two_by_two", "comparison", "chart", "chart_placeholder"):
         if not slide.get("source"):
@@ -369,7 +503,7 @@ def main():
         sys.exit(2)
 
     try:
-        story = json.loads(args.storyline.read_text())
+        story = json.loads(args.storyline.read_text(encoding="utf-8"))
     except json.JSONDecodeError as e:
         print(f"ERROR: invalid JSON: {e}", file=sys.stderr)
         sys.exit(2)
@@ -387,7 +521,7 @@ def main():
     infos = [i for i in issues if i.severity == "INFO"]
 
     if not issues:
-        print(f"✓ {args.storyline}: no issues found")
+        print(f"OK {args.storyline}: no issues found")
         sys.exit(0)
 
     for issue in issues:

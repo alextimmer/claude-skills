@@ -2,6 +2,16 @@
 
 Standard slide archetypes used in MBB-style decks. Pick the pattern that fits the action title.
 
+## Every slide is a table (the generating principle)
+
+Before picking a named pattern, think of the layout as **rows and columns**: rows = items (measures, options, phases), columns = dimensions (rationale, impact, timing, owner). This single principle produces clean, structured pages and prevents scattered elements. Three archetypes cover almost everything:
+
+- **Qualitative slide** — a text table: items in rows, columns like measure / rationale / impact / timing. Also process steps and timelines.
+- **Quantitative slide** — one chart as the main element, with a column for methodology and/or implications next to it.
+- **Integrated slide** — a table combining text rows with a data column (e.g. options with a revenue-pool bar per row plus qualitative columns).
+
+It is a rule of thumb, not a law — adjust when a framework (2x2, value chain) demands its own shape.
+
 ## Layout convention (applies to all slide types)
 
 - **Action title** — top of slide, bold, ~24pt, left-aligned, one or two lines max
@@ -18,8 +28,11 @@ Action title at top. Body is 3–4 supporting bullets, parallel in structure, ea
 **Bullet rules:**
 - Each bullet starts with the same part of speech (all verbs, or all nouns)
 - Each bullet is a complete thought, not a fragment
-- 3–5 bullets maximum
-- No nested sub-bullets
+- Groups of at least 2 — a single bullet is not a list; write it as plain text
+- 3–5 bullets maximum; one idea per bullet, two lines max
+- No nested sub-bullets (at most one level if unavoidable)
+
+**No clotheslines:** whenever 5 or more parallel elements appear, group them into labeled element groups (3 groups of 2 beat 1 list of 6), and consider a second dimension (e.g. examples per group) to turn the list into a table.
 
 ## Pattern 2 — Single-chart slide
 
@@ -32,7 +45,7 @@ Action title at top. Body is one chart (bar, line, waterfall, scatter). The char
 - **Line chart** — trends over time, usually with 2–4 series max
 - **Scatter** — relationship between two variables, often with quadrant labels
 
-**Chart anti-patterns:** 3D effects, gradient fills, more than 4 series on one chart, pie charts with more than 4 slices, dual y-axes.
+**Chart anti-patterns:** 3D effects, gradient fills, more than 4 series on one chart, dual y-axes — and **pie charts, which are banned outright in this skill** (the skill author's hard rule; share-of-whole messages render as stacked columns or sorted bars). See the comparison-type → chart-type table in `references/visual-style.md`.
 
 ### Building a chart slide that narrates itself (McCandless Method)
 
@@ -91,13 +104,30 @@ A single direct quote in large text in the center, attribution below in smaller 
 
 Phases as columns or rows with milestones, owners, and dates.
 
-**When to use:** Implementation slide. Always near the end of the deck.
+**When to use:** Implementation slide — place it near the end of the deck.
 
 **Rules:**
 - Show 2–4 phases (Now / Next / Later, or quarters)
 - Each phase has 2–4 milestones max
 - Mark dependencies if relevant
 - Owner names or function on each milestone
+
+## Structuring techniques for documents (navigation)
+
+For decks longer than ~10 slides, help the audience keep the map in their head:
+
+- **Structure pages:** introduce a framework before a section, so upcoming pages have a home.
+- **Tracking elements:** repeat the framework marker on each following page so the audience connects the dots.
+- **Chapter trackers:** small section labels in the top corner of each slide.
+- **Double-click logic:** a detail page is structured as a virtual double-click into an element of the prior page.
+- **Leading references:** start action titles with the words introduced on the structure page, so slides visibly attach to the framework.
+
+## Useful slide elements
+
+- **Callouts and bubbles** for remarks on specific chart elements
+- **Takeaway boxes** for the slide's overall conclusion
+- **Icons** for scannability (monochrome, one style, accent or gray only)
+- **Status stickers** — PRELIMINARY, INDICATIVE, FOR DISCUSSION, ILLUSTRATIVE — whenever numbers are not final. Use them honestly: they manage expectations and protect credibility.
 
 ## Pattern 9 — Executive summary slide
 

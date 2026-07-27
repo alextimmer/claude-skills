@@ -33,6 +33,25 @@ Before the pyramid, frame the problem so the audience knows why they're being as
 
 The Answer is the top of the pyramid. Everything that follows in the deck supports it.
 
+> **Alias:** some firms teach this as **SCR** (Situation–Complication–Resolution) — the same framework with the Question folded into the Complication. If the user says SCR, it maps 1:1 onto SCQA.
+
+## Action-title writing rules (beyond "complete sentence")
+
+- **State the So What, not just the facts.** "We win 40% of negotiations" is a fact; "Negotiation conversion declined from 55% to 40%, likely driven by recent scaling of the sales team" is an insight.
+- **Present tense, active verbs.** "Price drives growth" beats "growth was driven by price".
+- **Avoid general truths** that are always correct ("managing risk is important for success" says nothing).
+- **Avoid absolute statements** without room for outliers ("all divisions fail to follow best practices").
+- **Quantify whenever possible** — numbers make titles credible and precise.
+- **Results, not process.** Never "we conducted analyses and learned a lot"; always what was learned.
+
+**The improvement ladder** (worst → best):
+1. A topic label — "Market dynamics"
+2. A generic claim — "Focus on expansion to attractive geographies"
+3. A specific but wordy sentence
+4. A concise, quantified insight — "Asia Pacific and North America prioritized due to margins, growth and 100+ EUR mn market size"
+
+Climb every title to rung 4 before slide content is built.
+
 ## The governing thought
 
 A single sentence, ideally under 25 words, that:
@@ -66,7 +85,7 @@ Common MECE breakdowns:
 - By driver (Volume × Price × Mix for revenue change)
 - By 2x2 axis (e.g., growth vs. margin)
 
-When something doesn't fit MECE, the framework is wrong, not the data.
+When something doesn't fit MECE, redesign the framework rather than forcing the data — the framework is wrong, not the data.
 
 ## Test your storyline
 
