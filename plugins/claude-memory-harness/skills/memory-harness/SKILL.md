@@ -18,7 +18,7 @@ lab notebook: `CLAUDE.md` (standing instructions, TDD-mandatory), `.claude/rules
 | Request | Do |
 |---------|-----|
 | Install into a repo | Follow `references/install-procedure.md` |
-| Verify / self-test | `bash .claude/hooks/selftest.sh` (33 checks) in the target repo; then `/hooks` should list SessionStart + PreCompact + Stop |
+| Verify / self-test | `bash .claude/hooks/selftest.sh` (43 checks) in the target repo; `--live` fires the installed hooks in the repo and reports output + latency; then `/hooks` should list SessionStart + PreCompact + Stop |
 | Scan memory for secrets | `bash .claude/hooks/secret-scan.sh` before committing memory files (exit 1 = findings; report, never auto-edit) |
 | Tune hook patterns | `references/hook-tuning.md` |
 | Prune / promote / audit memory | `references/memory-conventions.md` |

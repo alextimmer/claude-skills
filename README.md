@@ -65,7 +65,7 @@ flowchart LR
 - 📋 **`CLAUDE.md` template** — standing instructions with a memory trigger table ("update as you go, not at the end") and a TDD-mandatory workflow default
 - 📓 **Three-file memory** — durable *decisions* (incl. "Ruled out" dead ends and a "Candidates" quarantine), a rolling *session log* with an "Open TODOs" micro-backlog and size caps, and a dated + attributed entry format (`## YYYY-MM-DD: Description [Agent]`) that keeps multi-agent workspaces auditable
 - 🪝 **Three tested hooks** — SessionStart orientation (with cap audit + post-compaction flush), a block-once PreCompact save-gate that makes memory get written *before* compaction discards the details, and a block-once Stop reminder that reads the actual transcript
-- ✅ **A 33-check self-test** — hook behavior is machine-verified, not asserted — plus a secret scan for memory files before they get committed
+- ✅ **A 43-check self-test** — hook behavior is machine-verified, not asserted — plus a secret scan for memory files before they get committed
 - 🤖 **The `memory-harness` skill** — say *"install my harness"* in any repo and Claude installs, adapts, and verifies the whole thing for you (asking first whether it should be team-shared or kept out of git via `.git/info/exclude`)
 
 Installing the plugin adds the *installer* — your repos stay untouched until you ask for the harness in one of them. Design rationale for every choice lives in [`DECISIONS.md`](plugins/claude-memory-harness/DECISIONS.md); manual install and verification steps in [`INSTALL.md`](plugins/claude-memory-harness/INSTALL.md).
@@ -168,7 +168,7 @@ This catches naming errors, JSON parse issues, and frontmatter problems across a
 
 ```bash
 bash plugins/claude-memory-harness/template/.claude/hooks/selftest.sh
-# -> 33 passed, 0 failed
+# -> 43 passed, 0 failed
 ```
 
 </details>

@@ -3,13 +3,14 @@
 `settings.json` must be **strict JSON — no comments allowed** — so the annotations live
 here instead. The shipped file defines three hooks whose logic lives in
 `.claude/hooks/` (script files, so they can be commented and tested). Every entry sets
-`"timeout": 10` — a hung hook must never stall a session.
+`"timeout": 10` — a hung hook must never stall a session — and a `statusMessage`,
+the spinner text shown while the hook runs.
 
 Run the self-test after install and after any hook edit — "written" does not equal
 "working"; the claims below are machine-checked:
 
 ```bash
-bash .claude/hooks/selftest.sh    # 33 checks, exit 0 = all green
+bash .claude/hooks/selftest.sh    # 43 checks, exit 0 = all green
 ```
 
 ## The SessionStart hook (initialization phase, model-facing context)
@@ -145,6 +146,9 @@ Read `hooks/memory-reminder.sh` — it is short and fully commented. In summary:
   default hook shell when installed** — these hooks require it (install Git for
   Windows; `CLAUDE_CODE_GIT_BASH_PATH` in settings if it's in a non-standard
   location). PowerShell-only Windows setups are NOT supported by these hooks.
+- **Opt out per invocation**: `CLAUDE_MEMORY_HARNESS_DISABLED=1 claude -p "..."` makes
+  all three hooks exit silently — for CI and one-shot sessions that share a cwd with
+  the harness but never opted into it.
 - **Compaction is covered twice**: the PreCompact save-gate blocks once BEFORE
   compaction when memory looks unsaved/unpruned (primary — details still in
   context), and the post-compact `SessionStart` re-fire (`source:"compact"`)
@@ -187,7 +191,10 @@ easier than authoring.
 
 ## Verify the hooks fire
 
-1. **Static**: `bash .claude/hooks/selftest.sh` → `33 passed, 0 failed`.
+1. **Static**: `bash .claude/hooks/selftest.sh` → `43 passed, 0 failed` (includes a
+   latency check per hook: a fire over 5 s fails, because Claude Code silently drops a
+   hook past its 10 s timeout). Add `--live` to also fire the installed hooks in this
+   repo and print what each emitted and how long it took.
 2. **Loaded**: run `/hooks` in an interactive session — `SessionStart`, `PreCompact`,
    and `Stop` must all be listed. (Settings load at session start; restart if needed.)
 3. **Live SessionStart**: start a new session — the first context should contain the

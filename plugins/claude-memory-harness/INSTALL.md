@@ -20,7 +20,7 @@ repo (the skill's `references/install-procedure.md` mirrors these steps).
       pre-compact.sh                 # PreCompact: block-once save-gate before compaction
       memory-reminder.sh             # Stop: block-once memory reminder
       secret-scan.sh                 # utility (not a hook): scan memory files before committing
-      selftest.sh                    # machine-checks hooks + scan (33 checks)
+      selftest.sh                    # machine-checks hooks + scan (43 checks)
     rules/
       README.md                      # note on how this folder auto-loads
       memory-attribution.md          # the [Agent] heading convention
@@ -131,8 +131,10 @@ despite its docs saying "tracked"). Pick deliberately:
    payloads and transcripts:
    ```bash
    bash .claude/hooks/selftest.sh
-   # -> ... 33 passed, 0 failed
+   # -> ... 43 passed, 0 failed
    ```
+   Then `bash .claude/hooks/selftest.sh --live` fires the installed hooks in this repo
+   and prints what each emitted and how many milliseconds it took.
 2. **Confirm Claude Code loads them:** open an interactive Claude Code session in the
    repo and run `/hooks`. `SessionStart`, `PreCompact`, and `Stop` should all be
    listed. (Restart the session if you added the files while one was open — settings

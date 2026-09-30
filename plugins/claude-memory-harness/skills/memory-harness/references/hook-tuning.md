@@ -2,7 +2,7 @@
 
 The hooks live in the target repo's `.claude/hooks/` and are wired in
 `.claude/settings.json` (each with `"timeout": 10`). After ANY change here:
-`bash .claude/hooks/selftest.sh` — 33 passed required.
+`bash .claude/hooks/selftest.sh` — 43 passed required.
 
 ## Stop hook (`memory-reminder.sh`) — the one that needs per-repo tuning
 
@@ -44,7 +44,9 @@ Rarely needs tuning. Keep the output SHORT — injected stdout is paid for in ev
 session's context budget. If the repo isn't git-based, it degrades to just the
 Open-TODOs pointer automatically. It also runs the size-cap audit on
 `memory-sessions.md` (180 lines / 32 KB / 3000 chars-per-line); raise the caps only
-deliberately — they are the rolling log's decay mechanism.
+deliberately — they are the rolling log's decay mechanism. Keep one fire well under
+5 s (selftest fails above that; Claude Code drops hooks past 10 s) — every `git`/`grep`
+call is a fork, and forks cost ~90 ms under Git Bash on Windows.
 
 ## PreCompact hook (`pre-compact.sh`)
 

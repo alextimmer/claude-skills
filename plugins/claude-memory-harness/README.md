@@ -69,7 +69,7 @@ template/
       pre-compact.sh             -> PreCompact: block-once save-gate before compaction
       memory-reminder.sh         -> Stop: block-once memory reminder
       secret-scan.sh             -> utility (not a hook): scan memory files before committing
-      selftest.sh                -> machine-checks hooks + scan (33 checks)
+      selftest.sh                -> machine-checks hooks + scan (43 checks)
     rules/
       README.md                  -> how this folder works
       memory-attribution.md      -> the [Agent] heading convention
@@ -173,11 +173,12 @@ turn to record/prune while the details are still in context — then compaction
 proceeds unconditionally (the once-per-session marker is the anti-wedge guarantee).
 The post-compaction flush in `session-context.sh` stays as backstop.
 
-All hooks are machine-checked: `bash .claude/hooks/selftest.sh` runs 33 branch tests
+All hooks are machine-checked: `bash .claude/hooks/selftest.sh` runs 43 branch tests
 against simulated payloads and transcripts — "written" does not equal "working". Full
 explanation, tuning guide (incl. vocabulary-collision warnings), and verification:
 `template/.claude/settings.README.md`. History of why the original advisory design was
-replaced: `DECISIONS.md`.
+replaced: `DECISIONS.md`. All three hooks honor `CLAUDE_MEMORY_HARNESS_DISABLED=1`
+(silent exit — for CI and `claude -p` sessions that never opted in).
 
 > **Compaction is covered** (resolved): the memory flush rides the post-compact
 > `SessionStart` re-fire (`source: "compact"`) rather than a `PreCompact` hook —

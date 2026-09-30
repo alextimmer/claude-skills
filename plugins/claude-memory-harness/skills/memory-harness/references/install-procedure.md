@@ -54,7 +54,8 @@ the optional "Open TODOs (small)" section. Format:
 ## 6. Verify (mandatory before claiming success)
 
 ```bash
-bash .claude/hooks/selftest.sh    # must end: 33 passed, 0 failed
+bash .claude/hooks/selftest.sh    # must end: 43 passed, 0 failed
+bash .claude/hooks/selftest.sh --live   # then: fires the installed hooks in this repo, reports output + ms
 ```
 
 - Vocabulary check: compare the repo's domain vocabulary against `STRONG_PATTERNS`
