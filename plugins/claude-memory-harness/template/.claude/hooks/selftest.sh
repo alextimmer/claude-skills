@@ -182,6 +182,17 @@ OUT_SEEDED=$(echo '{}' | CLAUDE_PROJECT_DIR="$PROJ_SEEDED" bash "$START_HOOK")
 check "start: seed-example memory -> honesty note"                 "seed example"             "$OUT_SEEDED"
 check_not "start: real entries -> no honesty note"                 "seed example"             "$OUT_OK"
 
+# --- Seed hygiene: the shipped seed files must not trip any advisory themselves.
+# Runs against a COPY of ../rules only while they still hold the seed example; once
+# real entries exist they are the user's memory and any advisory there is real.
+RULES="$HERE/../rules"
+if grep -q '<Example' "$RULES/memory-sessions.md" 2>/dev/null; then
+  SEEDP="$TMP/projseedreal"; mkdir -p "$SEEDP/.claude/rules"; cp "$RULES"/*.md "$SEEDP/.claude/rules/"
+  check_not "seed: shipped seed files trip no stale-ref advisory" "Stale memory references" "$(echo '{}' | CLAUDE_PROJECT_DIR="$SEEDP" bash "$START_HOOK")"
+else
+  echo "PASS: seed: memory already has real entries (seed-hygiene check skipped)"; PASS=$((PASS+1))
+fi
+
 # --- secret-scan.sh: Class-A detection, Class-B (long tokens / SHAs) stay quiet ---
 SCAN_HOOK="$HERE/secret-scan.sh"
 SCAN_HIT=$(bash "$SCAN_HOOK" "$SECRETY"); SCAN_HIT_RC=$?
