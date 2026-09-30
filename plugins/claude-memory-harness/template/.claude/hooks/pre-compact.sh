@@ -31,7 +31,10 @@
 PAYLOAD=$(cat)
 
 SESSION_ID=$(printf '%s' "$PAYLOAD" | sed -n 's/.*"session_id":"\([^"]*\)".*/\1/p')
-MARKER="${TMPDIR:-/tmp}/claude-memory-precompact-${SESSION_ID:-unknown}"
+# Same private-cache location as the Stop hook's marker (see memory-reminder.sh).
+MARKER_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/claude-memory-harness"
+mkdir -p "$MARKER_DIR" 2>/dev/null || MARKER_DIR="${TMPDIR:-/tmp}"
+MARKER="$MARKER_DIR/precompact-${SESSION_ID:-unknown}"
 
 # Guard 1: already gated once this session — let compaction proceed.
 [ -n "$SESSION_ID" ] && [ -f "$MARKER" ] && { echo '{}'; exit 0; }

@@ -12,9 +12,9 @@
 #      the stop that follows a hook-forced continuation).
 #   2. memory-write guard -> if the transcript already contains a Write/Edit to a
 #      memory-*.md file, the job is done: stay silent.
-#   3. once-per-session marker -> after one block, a marker file in $TMPDIR
-#      silences the hook for the rest of the session, even if Claude decided
-#      nothing was worth recording.
+#   3. once-per-session marker -> after one block, a marker file under
+#      ~/.cache/claude-memory-harness/ silences the hook for the rest of the
+#      session, even if Claude decided nothing was worth recording.
 #
 # Input (stdin): Stop-event JSON payload — metadata ONLY:
 #   {"session_id":"...","transcript_path":"...","cwd":"...",
@@ -40,7 +40,12 @@ case "$PAYLOAD" in
 esac
 
 SESSION_ID=$(printf '%s' "$PAYLOAD" | sed -n 's/.*"session_id":"\([^"]*\)".*/\1/p')
-MARKER="${TMPDIR:-/tmp}/claude-memory-reminder-${SESSION_ID:-unknown}"
+# Once-per-session markers live in the user's private cache, not in shared /tmp:
+# on a multi-user host another account could plant a marker there and silence
+# the hook. Falls back to $TMPDIR only if the cache dir cannot be created.
+MARKER_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/claude-memory-harness"
+mkdir -p "$MARKER_DIR" 2>/dev/null || MARKER_DIR="${TMPDIR:-/tmp}"
+MARKER="$MARKER_DIR/reminder-${SESSION_ID:-unknown}"
 
 # Guard 3: already reminded once this session.
 [ -n "$SESSION_ID" ] && [ -f "$MARKER" ] && { echo '{}'; exit 0; }

@@ -11,6 +11,7 @@ STOP_HOOK="$HERE/memory-reminder.sh"
 START_HOOK="$HERE/session-context.sh"
 PRECOMPACT_HOOK="$HERE/pre-compact.sh"
 TMP="$(mktemp -d)"
+export XDG_CACHE_HOME="$TMP/cache"   # hooks write once-per-session markers here; never the real cache
 PASS=0; FAIL=0
 
 check() { # check <name> <expected-substring> <actual>
@@ -93,7 +94,6 @@ CLEANY="$TMP/cleany.md"
 printf '# notes\nnothing secret here, just a git SHA 0123456789abcdef0123456789abcdef01234567\n' > "$CLEANY"
 
 # --- Stop hook: memory-reminder.sh ---
-rm -f "${TMPDIR:-/tmp}/claude-memory-reminder-st"*
 check "stop: lesson w/o memory update -> block"        '"decision":"block"' "$(payload "$LESSON" st1 false | bash "$STOP_HOOK")"
 check "stop: second stop same session -> quiet marker" '{}'                 "$(payload "$LESSON" st1 false | bash "$STOP_HOOK")"
 check "stop: stop_hook_active -> quiet"                '{}'                 "$(payload "$LESSON" st2 true  | bash "$STOP_HOOK")"
@@ -103,7 +103,9 @@ check "stop: domain-vocabulary noise -> quiet"         '{}'                 "$(p
 check "stop: missing transcript -> quiet"              '{}'                 "$(payload "$TMP/nope.jsonl" st6 false | bash "$STOP_HOOK")"
 check "stop: tool-use rejection signal -> block"       '"decision":"block"' "$(payload "$REJECTED" st7 false | bash "$STOP_HOOK")"
 check "stop: 'No,' correction opener -> block"         '"decision":"block"' "$(payload "$CORRECTED" st8 false | bash "$STOP_HOOK")"
-rm -f "${TMPDIR:-/tmp}/claude-memory-reminder-st"*
+[ -f "$TMP/cache/claude-memory-harness/reminder-st1" ] \
+  && { echo "PASS: stop: marker lives under XDG_CACHE_HOME"; PASS=$((PASS+1)); } \
+  || { echo "FAIL: stop: marker lives under XDG_CACHE_HOME (not found)"; FAIL=$((FAIL+1)); }
 
 # --- SessionStart hook: session-context.sh ---
 OUT=$(echo '{"session_id":"ss1","hook_event_name":"SessionStart","source":"startup"}' | bash "$START_HOOK")
@@ -127,7 +129,6 @@ check_not "start: sessions log under caps -> no audit"    "Memory discipline"  "
 pcpayload() { # pcpayload <session-id>
   printf '{"session_id":"%s","transcript_path":"%s/t.jsonl","cwd":"%s","hook_event_name":"PreCompact","trigger":"auto"}' "$1" "$TMP" "$TMP"
 }
-rm -f "${TMPDIR:-/tmp}/claude-memory-precompact-pc"*
 check "precompact: stale memory -> block with save demand" '"decision":"block"' "$(pcpayload pc1 | CLAUDE_PROJECT_DIR="$PROJ_STALE" bash "$PRECOMPACT_HOOK")"
 check "precompact: second call same session -> proceed"    '{}'                 "$(pcpayload pc1 | CLAUDE_PROJECT_DIR="$PROJ_STALE" bash "$PRECOMPACT_HOOK")"
 touch "$PROJ/.claude/rules/memory-sessions.md"
@@ -135,7 +136,6 @@ check "precompact: fresh + under caps -> proceed"          '{}'                 
 touch "$PROJ_FAT/.claude/rules/memory-sessions.md"
 check "precompact: fresh but over caps -> block (prune)"   '"decision":"block"' "$(pcpayload pc3 | CLAUDE_PROJECT_DIR="$PROJ_FAT" bash "$PRECOMPACT_HOOK")"
 check "precompact: no memory files -> proceed quietly"     '{}'                 "$(pcpayload pc4 | CLAUDE_PROJECT_DIR="$TMP" bash "$PRECOMPACT_HOOK")"
-rm -f "${TMPDIR:-/tmp}/claude-memory-precompact-pc"*
 
 # --- Opt-out: CLAUDE_MEMORY_HARNESS_DISABLED=1 silences every hook (CI, claude -p) ---
 check_not "optout: stop hook disabled -> no block"      '"decision":"block"' "$(payload "$LESSON" od1 false | CLAUDE_MEMORY_HARNESS_DISABLED=1 bash "$STOP_HOOK")"
