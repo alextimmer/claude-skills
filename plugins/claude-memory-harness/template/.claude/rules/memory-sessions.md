@@ -34,6 +34,8 @@
      items when done; note who deferred it and when. Delete this section if unused. -->
 ## Open TODOs (small)
 - <small deferred item — what, where, why deferred, date deferred>
+- Active plan: <path to the implementation plan in flight, e.g. docs/superpowers/plans/YYYY-MM-DD-feature.md — task N of M> (delete this line when no plan is in flight)
+- Handoff: <topic> -> docs/handoffs/<topic>.md (a topic that outlives this log; details live there, not here)
 
 ## YYYY-MM-DD: <Example — delete once you have real entries> [Agent Name]
 
