@@ -13,6 +13,7 @@ PRECOMPACT_HOOK="$HERE/pre-compact.sh"
 TMP="$(mktemp -d)"
 export XDG_CACHE_HOME="$TMP/cache"   # hooks write once-per-session markers here; never the real cache
 PASS=0; FAIL=0
+LIVE=0; [ "${1:-}" = "--live" ] && LIVE=1   # --live: also fire the real hooks in the installed repo
 
 check() { # check <name> <expected-substring> <actual>
   if printf '%s' "$3" | grep -qF "$2"; then
@@ -151,6 +152,24 @@ SETTINGS="$HERE/../settings.json"
   && { echo "PASS: settings: every hook entry carries a statusMessage"; PASS=$((PASS+1)); } \
   || { echo "FAIL: settings: expected three statusMessage fields in $SETTINGS"; FAIL=$((FAIL+1)); }
 
+# --- Latency: Claude Code silently discards a hook that exceeds its 10 s timeout.
+# planning-with-files measured ~90 ms per fork under Git Bash on Windows, and a
+# 130-fork hook took 7-12 s. Threshold 5000 ms = half the timeout; the measured
+# number is printed so per-repo tuning has a baseline.
+ms_now() { date +%s%N 2>/dev/null; }
+fire_ms() { # fire_ms <hook> <payload-string> <project-dir>  -> milliseconds, or -1 without a ns clock
+  local s e; s=$(ms_now); printf '%s' "$2" | CLAUDE_PROJECT_DIR="$3" bash "$1" >/dev/null 2>&1; e=$(ms_now)
+  case "$s$e" in ''|*[!0-9]*) echo -1;; *) echo $(( (e - s) / 1000000 ));; esac
+}
+lat_check() { # lat_check <name> <ms>
+  if [ "$2" -lt 0 ]; then echo "PASS: $1 (no nanosecond clock; skipped)"; PASS=$((PASS+1))
+  elif [ "$2" -lt 5000 ]; then echo "PASS: $1 ($2 ms)"; PASS=$((PASS+1))
+  else echo "FAIL: $1 ($2 ms >= 5000 ms; Claude Code drops hooks past 10 s)"; FAIL=$((FAIL+1)); fi
+}
+lat_check "latency: session-context.sh one fire" "$(fire_ms "$START_HOOK" '{"session_id":"lt1","source":"startup"}' "$PROJ")"
+lat_check "latency: pre-compact.sh one fire"     "$(fire_ms "$PRECOMPACT_HOOK" "$(pcpayload lt2)" "$PROJ")"
+lat_check "latency: memory-reminder.sh one fire" "$(fire_ms "$STOP_HOOK" "$(payload "$LESSON" lt3 false)" "$PROJ")"
+
 # --- SessionStart hook: conditional advisories (stale refs, age stamp, seeded note) ---
 OUT_REFS=$(echo '{}' | CLAUDE_PROJECT_DIR="$PROJ_REFS" bash "$START_HOOK")
 check "start: dead file reference in memory -> stale-ref advisory" "Stale memory references" "$OUT_REFS"
@@ -182,6 +201,29 @@ COMPACT_OUT=$(printf '{"session_id":"cc1","transcript_path":"%s","hook_event_nam
 check "start: source=compact -> memory-flush nudge"    "compacted"          "$COMPACT_OUT"
 check "start: source=compact -> names transcript path" "$LESSON"            "$COMPACT_OUT"
 check_not "start: source=startup -> no compact nudge"  "compacted"          "$OUT"
+
+# --- --live: fire the installed hooks in the real repo (synthetic payloads, session id
+# selftest-live, markers still under the temp XDG cache). Fixtures prove the logic;
+# this proves the hooks emit on THIS machine in THIS repo. Report only, no checks.
+if [ "$LIVE" = "1" ]; then
+  REPO="$(cd "$HERE/../.." && pwd)"
+  echo "--- live: $REPO ---"
+  live_report() { # live_report <label> <hook> <payload>
+    local s e out ms; s=$(ms_now)
+    out=$(printf '%s' "$3" | CLAUDE_PROJECT_DIR="$REPO" bash "$2" 2>&1); e=$(ms_now)
+    case "$s$e" in ''|*[!0-9]*) ms="?";; *) ms=$(( (e - s) / 1000000 ));; esac
+    if [ -n "$out" ]; then echo "live: $1 -> emitted in ${ms} ms: $(printf '%s' "$out" | tr '\n' ' ' | head -c 200)"
+    else echo "live: $1 -> silent in ${ms} ms"; fi
+  }
+  live_report "SessionStart(startup)" "$START_HOOK"      '{"session_id":"selftest-live","hook_event_name":"SessionStart","source":"startup"}'
+  live_report "PreCompact(manual)"    "$PRECOMPACT_HOOK" '{"session_id":"selftest-live","hook_event_name":"PreCompact","trigger":"manual"}'
+  live_report "Stop(no transcript)"   "$STOP_HOOK"       '{"session_id":"selftest-live","transcript_path":"","hook_event_name":"Stop","stop_hook_active":false}'
+  for f in session-context pre-compact memory-reminder; do
+    grep -q "hooks/$f.sh" "$REPO/.claude/settings.json" 2>/dev/null \
+      && echo "live: settings.json wires $f.sh" || echo "live: WARNING settings.json does not wire $f.sh"
+  done
+  echo "live: expected shape -> SessionStart emits the orientation block; PreCompact blocks only if memory is stale/over caps; Stop answers {} (allow) without a transcript."
+fi
 
 rm -rf "$TMP"
 echo "---"
