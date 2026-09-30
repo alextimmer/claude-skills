@@ -137,6 +137,11 @@ check "precompact: fresh but over caps -> block (prune)"   '"decision":"block"' 
 check "precompact: no memory files -> proceed quietly"     '{}'                 "$(pcpayload pc4 | CLAUDE_PROJECT_DIR="$TMP" bash "$PRECOMPACT_HOOK")"
 rm -f "${TMPDIR:-/tmp}/claude-memory-precompact-pc"*
 
+# --- Opt-out: CLAUDE_MEMORY_HARNESS_DISABLED=1 silences every hook (CI, claude -p) ---
+check_not "optout: stop hook disabled -> no block"      '"decision":"block"' "$(payload "$LESSON" od1 false | CLAUDE_MEMORY_HARNESS_DISABLED=1 bash "$STOP_HOOK")"
+check_not "optout: precompact disabled -> no block"     '"decision":"block"' "$(pcpayload od2 | CLAUDE_MEMORY_HARNESS_DISABLED=1 CLAUDE_PROJECT_DIR="$PROJ_STALE" bash "$PRECOMPACT_HOOK")"
+check_not "optout: sessionstart disabled -> no output"  "Open TODOs"         "$(echo '{}' | CLAUDE_MEMORY_HARNESS_DISABLED=1 CLAUDE_PROJECT_DIR="$PROJ" bash "$START_HOOK")"
+
 # --- SessionStart hook: conditional advisories (stale refs, age stamp, seeded note) ---
 OUT_REFS=$(echo '{}' | CLAUDE_PROJECT_DIR="$PROJ_REFS" bash "$START_HOOK")
 check "start: dead file reference in memory -> stale-ref advisory" "Stale memory references" "$OUT_REFS"

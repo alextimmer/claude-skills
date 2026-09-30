@@ -23,6 +23,11 @@
 #   trigger: "manual"|"auto") — metadata only.
 # Output (stdout): {} to allow compaction, or {"decision":"block","reason":...}.
 
+# Opt-out for one-shot / CI sessions (e.g. `claude -p`) that merely share a cwd
+# with the harness and never opted into it: CLAUDE_MEMORY_HARNESS_DISABLED=1 makes
+# the hook consume its payload and exit silently (exit 0, no output = proceed).
+[ "${CLAUDE_MEMORY_HARNESS_DISABLED:-}" = "1" ] && { cat >/dev/null; exit 0; }
+
 PAYLOAD=$(cat)
 
 SESSION_ID=$(printf '%s' "$PAYLOAD" | sed -n 's/.*"session_id":"\([^"]*\)".*/\1/p')

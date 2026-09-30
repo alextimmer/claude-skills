@@ -27,6 +27,11 @@
 # vocabulary (e.g. a repo full of "FixedWidth"/"fixed-width" identifiers is why
 # "fixed" is matched as a phrase, not a bare word).
 
+# Opt-out for one-shot / CI sessions (e.g. `claude -p`) that merely share a cwd
+# with the harness and never opted into it: CLAUDE_MEMORY_HARNESS_DISABLED=1 makes
+# the hook consume its payload and exit silently (exit 0, no output = proceed).
+[ "${CLAUDE_MEMORY_HARNESS_DISABLED:-}" = "1" ] && { cat >/dev/null; exit 0; }
+
 PAYLOAD=$(cat)
 
 # Guard 1: we already blocked on the previous stop — let Claude stop now.
