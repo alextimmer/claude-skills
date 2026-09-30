@@ -10,7 +10,7 @@ Design recap: reads the transcript at `transcript_path` (the Stop stdin payload 
 metadata only — it never contains the conversation), and blocks the stop ONCE with a
 model-facing "update memory" reason when a lesson-signal is found and no
 `memory-*.md` was written this session. Guards: `stop_hook_active` (never twice in a
-row), a `$TMPDIR` marker (once per session), and the already-updated check.
+row), a marker under `~/.cache/claude-memory-harness/` (once per session), and the already-updated check.
 
 ### Tuning `STRONG_PATTERNS`
 

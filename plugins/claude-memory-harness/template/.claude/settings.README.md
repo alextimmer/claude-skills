@@ -110,7 +110,7 @@ advisory `systemMessage`. Empirical testing showed two fatal flaws:
 Read `hooks/memory-reminder.sh` — it is short and fully commented. In summary:
 
 1. **Never block twice in a row**: exits immediately when `stop_hook_active` is true.
-2. **Once per session**: after one block, a marker file in `$TMPDIR` keeps it silent
+2. **Once per session**: after one block, a marker file under `~/.cache/claude-memory-harness/` keeps it silent
    for the rest of the session (so "nothing worth recording" costs one extra turn, max).
 3. **Already-updated guard**: if the transcript contains a `Write`/`Edit` to a
    `memory-*.md` file, memory was maintained as-you-go — stay silent. This is the

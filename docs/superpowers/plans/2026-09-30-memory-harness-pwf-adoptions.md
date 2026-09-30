@@ -24,7 +24,7 @@
 - Modify: `template/.claude/hooks/memory-reminder.sh:30`
 - Test: `template/.claude/hooks/selftest.sh` (append after the PreCompact section)
 
-- [ ] **Step 1: Write the failing checks**
+- [x] **Step 1: Write the failing checks**
 
 Append to `selftest.sh` directly after the line `rm -f "${TMPDIR:-/tmp}/claude-memory-precompact-pc"*` (end of the PreCompact section):
 
@@ -35,12 +35,12 @@ check_not "optout: precompact disabled -> no block"     '"decision":"block"' "$(
 check_not "optout: sessionstart disabled -> no output"  "Open TODOs"         "$(echo '{}' | CLAUDE_MEMORY_HARNESS_DISABLED=1 CLAUDE_PROJECT_DIR="$PROJ" bash "$START_HOOK")"
 ```
 
-- [ ] **Step 2: Run selftest to verify the three checks fail**
+- [x] **Step 2: Run selftest to verify the three checks fail**
 
 Run: `bash plugins/claude-memory-harness/template/.claude/hooks/selftest.sh | grep -E 'optout|passed'`
 Expected: three `FAIL: optout: ...` lines, then `33 passed, 3 failed`.
 
-- [ ] **Step 3: Add the guard to each hook**
+- [x] **Step 3: Add the guard to each hook**
 
 In each of the three hook scripts, insert this block immediately before the line `PAYLOAD=$(cat)`:
 
@@ -51,12 +51,12 @@ In each of the three hook scripts, insert this block immediately before the line
 [ "${CLAUDE_MEMORY_HARNESS_DISABLED:-}" = "1" ] && { cat >/dev/null; exit 0; }
 ```
 
-- [ ] **Step 4: Run selftest to verify green**
+- [x] **Step 4: Run selftest to verify green**
 
 Run: `bash plugins/claude-memory-harness/template/.claude/hooks/selftest.sh | tail -1`
 Expected: `36 passed, 0 failed`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add plugins/claude-memory-harness/template/.claude/hooks/
@@ -72,7 +72,7 @@ git commit -m "harness: add CLAUDE_MEMORY_HARNESS_DISABLED opt-out to all hooks"
 - Modify: `template/.claude/hooks/pre-compact.sh:28-30` (MARKER line)
 - Test: `template/.claude/hooks/selftest.sh`
 
-- [ ] **Step 1: Make the selftest hermetic and write the failing check**
+- [x] **Step 1: Make the selftest hermetic and write the failing check**
 
 In `selftest.sh`, after `TMP="$(mktemp -d)"` add:
 
@@ -97,12 +97,12 @@ Directly after the check `stop: 'No,' correction opener -> block` add:
   || { echo "FAIL: stop: marker lives under XDG_CACHE_HOME (not found)"; FAIL=$((FAIL+1)); }
 ```
 
-- [ ] **Step 2: Run selftest to verify the check fails**
+- [x] **Step 2: Run selftest to verify the check fails**
 
 Run: `bash plugins/claude-memory-harness/template/.claude/hooks/selftest.sh | grep -E 'XDG|passed'`
 Expected: `FAIL: stop: marker lives under XDG_CACHE_HOME (not found)` and `36 passed, 1 failed`.
 
-- [ ] **Step 3: Move the markers**
+- [x] **Step 3: Move the markers**
 
 In `memory-reminder.sh` replace
 
@@ -138,12 +138,12 @@ MARKER="$MARKER_DIR/precompact-${SESSION_ID:-unknown}"
 
 Also update the header comment in `memory-reminder.sh` guard 3 from `a marker file in $TMPDIR` to `a marker file under ~/.cache/claude-memory-harness`.
 
-- [ ] **Step 4: Run selftest to verify green, twice**
+- [x] **Step 4: Run selftest to verify green, twice**
 
 Run: `bash plugins/claude-memory-harness/template/.claude/hooks/selftest.sh | tail -1; bash plugins/claude-memory-harness/template/.claude/hooks/selftest.sh | tail -1`
 Expected: `37 passed, 0 failed` both times (the second run proves no marker leaked between runs).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add plugins/claude-memory-harness/template/.claude/hooks/
@@ -158,7 +158,7 @@ git commit -m "harness: keep once-per-session markers in the user cache dir"
 - Modify: `template/.claude/settings.json`
 - Test: `template/.claude/hooks/selftest.sh`
 
-- [ ] **Step 1: Write the failing checks**
+- [x] **Step 1: Write the failing checks**
 
 Append to `selftest.sh` after the opt-out block from Task 1:
 
@@ -173,12 +173,12 @@ SETTINGS="$HERE/../settings.json"
   || { echo "FAIL: settings: expected three statusMessage fields in $SETTINGS"; FAIL=$((FAIL+1)); }
 ```
 
-- [ ] **Step 2: Run selftest to verify one check fails**
+- [x] **Step 2: Run selftest to verify one check fails**
 
 Run: `bash plugins/claude-memory-harness/template/.claude/hooks/selftest.sh | grep -E 'settings|passed'`
 Expected: `PASS: settings: three bash hook commands wired`, `FAIL: settings: expected three statusMessage fields`, `38 passed, 1 failed`.
 
-- [ ] **Step 3: Add the field to each entry**
+- [x] **Step 3: Add the field to each entry**
 
 In `settings.json`, add a `statusMessage` after each `"timeout": 10` (keep strict JSON):
 
@@ -198,12 +198,12 @@ for Stop, and
 ```
 for PreCompact.
 
-- [ ] **Step 4: Verify JSON validity and green selftest**
+- [x] **Step 4: Verify JSON validity and green selftest**
 
 Run: `git diff --stat plugins/claude-memory-harness/template/.claude/settings.json && bash plugins/claude-memory-harness/template/.claude/hooks/selftest.sh | tail -1`
 Expected: three insertions, `39 passed, 0 failed`. Then eyeball the file once for a trailing comma.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add plugins/claude-memory-harness/template/.claude/
@@ -217,7 +217,7 @@ git commit -m "harness: show a spinner statusMessage while each hook runs"
 **Files:**
 - Modify: `template/.claude/hooks/selftest.sh`
 
-- [ ] **Step 1: Add latency checks (they pass on a healthy machine; the FAIL branch is the guard)**
+- [x] **Step 1: Add latency checks (they pass on a healthy machine; the FAIL branch is the guard)**
 
 Append after the settings block from Task 3:
 
@@ -241,12 +241,12 @@ lat_check "latency: pre-compact.sh one fire"     "$(fire_ms "$PRECOMPACT_HOOK" "
 lat_check "latency: memory-reminder.sh one fire" "$(fire_ms "$STOP_HOOK" "$(payload "$LESSON" lt3 false)" "$PROJ")"
 ```
 
-- [ ] **Step 2: Run selftest**
+- [x] **Step 2: Run selftest**
 
 Run: `bash plugins/claude-memory-harness/template/.claude/hooks/selftest.sh | grep -E 'latency|passed'`
 Expected: three `PASS: latency: ... (N ms)` lines with N under 1500 on this machine, `42 passed, 0 failed`.
 
-- [ ] **Step 3: Add the --live mode**
+- [x] **Step 3: Add the --live mode**
 
 At the top of `selftest.sh`, after `PASS=0; FAIL=0`, add:
 
@@ -281,12 +281,12 @@ if [ "$LIVE" = "1" ]; then
 fi
 ```
 
-- [ ] **Step 4: Run both modes**
+- [x] **Step 4: Run both modes**
 
 Run: `bash plugins/claude-memory-harness/template/.claude/hooks/selftest.sh --live | tail -9`
 Expected: `42 passed, 0 failed`, then a `--- live:` block with three `live:` lines (SessionStart emitted, PreCompact blocked or silent, Stop silent) and three `wires` lines.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add plugins/claude-memory-harness/template/.claude/hooks/selftest.sh
@@ -303,7 +303,7 @@ git commit -m "harness: selftest measures hook latency and gains a --live mode"
 - Modify: `template/.claude/settings.README.md` (section "Rule for future hooks")
 - Modify: `skills/memory-harness/references/memory-conventions.md` (Writing rules)
 
-- [ ] **Step 1: template/CLAUDE.md**
+- [x] **Step 1: template/CLAUDE.md**
 
 Insert after the "Trust the present over memory" paragraph:
 
@@ -316,7 +316,7 @@ memory files**: they report lessons in their result, and the main session decide
 what to record (one writer per file keeps entries attributable).
 ```
 
-- [ ] **Step 2: rules/README.md**
+- [x] **Step 2: rules/README.md**
 
 Add to "Rules of thumb", after the first bullet:
 
@@ -334,7 +334,7 @@ Subagents dispatched from a session do not edit these files: they report lessons
 their result and the dispatching session records them — one writer per file.
 ```
 
-- [ ] **Step 3: settings.README.md**
+- [x] **Step 3: settings.README.md**
 
 Append to the section "Rule for future hooks: injected content must be framed":
 
@@ -348,7 +348,7 @@ stop again") — planning-with-files' PR #180 showed that imperative reason text
 gate into an unconditional continuation command.
 ```
 
-- [ ] **Step 4: memory-conventions.md**
+- [x] **Step 4: memory-conventions.md**
 
 Add to "Writing rules":
 
@@ -360,7 +360,7 @@ Add to "Writing rules":
   session records them.
 ```
 
-- [ ] **Step 5: Selftest still green, commit**
+- [x] **Step 5: Selftest still green, commit**
 
 Run: `bash plugins/claude-memory-harness/template/.claude/hooks/selftest.sh | tail -1`
 Expected: `42 passed, 0 failed`
@@ -379,7 +379,7 @@ git commit -m "harness: frame memory files as data and set one-writer rule for s
 - Modify: `template/.claude/rules/README.md` (Rules of thumb)
 - Modify: `skills/memory-harness/references/memory-conventions.md` (new section)
 
-- [ ] **Step 1: memory-sessions.md template**
+- [x] **Step 1: memory-sessions.md template**
 
 Replace
 
@@ -397,7 +397,7 @@ with
 - Handoff: <topic> -> docs/handoffs/<topic>.md (a topic that outlives this log; details live there, not here)
 ```
 
-- [ ] **Step 2: rules/README.md**
+- [x] **Step 2: rules/README.md**
 
 Add to "Rules of thumb", before the size-caps bullet:
 
@@ -411,7 +411,7 @@ Add to "Rules of thumb", before the size-caps bullet:
   context only when read.
 ```
 
-- [ ] **Step 3: memory-conventions.md**
+- [x] **Step 3: memory-conventions.md**
 
 Add a section before "Pruning / auditing":
 
@@ -430,7 +430,7 @@ Add a section before "Pruning / auditing":
   it does not track the workflow (task tracking belongs to a sibling plugin).
 ```
 
-- [ ] **Step 4: Selftest still green, commit**
+- [x] **Step 4: Selftest still green, commit**
 
 Run: `bash plugins/claude-memory-harness/template/.claude/hooks/selftest.sh | tail -1`
 Expected: `42 passed, 0 failed`
@@ -448,7 +448,7 @@ git commit -m "harness: add active-plan and handoff pointer conventions to Open 
 - Modify: `DECISIONS.md` (rows 48-55, Deferred section)
 - Modify: `README.md` (plugin), `INSTALL.md`, `skills/memory-harness/SKILL.md`, `skills/memory-harness/references/hook-tuning.md`, `skills/memory-harness/references/install-procedure.md`, `template/.claude/settings.README.md`, repo-root `README.md`
 
-- [ ] **Step 1: Bump every "33" self-test reference to 42**
+- [x] **Step 1: Bump every "33" self-test reference to 42**
 
 Run from the repo root:
 
@@ -459,7 +459,7 @@ grep -rn -E '\b33\b' plugins/claude-memory-harness README.md | grep -v DECISIONS
 
 Expected: the second grep prints nothing (every self-test count now reads 42; DECISIONS history rows keep their old numbers).
 
-- [ ] **Step 2: DECISIONS.md rows**
+- [x] **Step 2: DECISIONS.md rows**
 
 Append to the rationale table:
 
@@ -488,7 +488,7 @@ Add under "Deferred / open":
   pending; reuse the superpowers plan file as the single plan artifact if built.
 ```
 
-- [ ] **Step 3: settings.README.md**
+- [x] **Step 3: settings.README.md**
 
 In "Customizing" add a bullet:
 
@@ -510,7 +510,7 @@ In "Verify the hooks fire", change item 1 to:
 In the intro paragraph after "Every entry sets `"timeout": 10`", append: `and a
 `statusMessage` (the spinner text shown while the hook runs).`
 
-- [ ] **Step 4: INSTALL.md Step 5 and install-procedure.md**
+- [x] **Step 4: INSTALL.md Step 5 and install-procedure.md**
 
 In `INSTALL.md` Step 5 item 1, after the code block add:
 
@@ -521,7 +521,7 @@ In `INSTALL.md` Step 5 item 1, after the code block add:
 
 In `skills/memory-harness/references/install-procedure.md`, after the selftest line add the same `--live` sentence.
 
-- [ ] **Step 5: SKILL.md and README.md (plugin) and hook-tuning.md**
+- [x] **Step 5: SKILL.md and README.md (plugin) and hook-tuning.md**
 
 `skills/memory-harness/SKILL.md` "Verify / self-test" row: append `; \`--live\` fires the installed hooks in the repo`.
 
@@ -529,7 +529,7 @@ Plugin `README.md` section 2, end of the hooks paragraph (after "Full explanatio
 
 `hook-tuning.md`: under "SessionStart hook", add: `Keep one fire well under 5 s (selftest fails above that; Claude Code drops hooks past 10 s) — every \`git\`/\`grep\` call is a fork, and forks cost ~90 ms under Git Bash.`
 
-- [ ] **Step 6: Final verification and commit**
+- [x] **Step 6: Final verification and commit**
 
 Run:
 ```bash
@@ -551,3 +551,7 @@ git commit -m "harness: record PWF-derived decisions 48-57 and update self-test 
 - Spec coverage: item 1 (trust frame) → Task 5; item 2 (opt-out) → Task 1; item 3 (latency + live) → Task 4; item 4 (active-plan pointer, convention only) → Task 6; item 5 (cache markers) → Task 2; item 6 (statusMessage) → Task 3; item 7 (subagent line) → Task 5; item 8 (handoffs) → Task 6; item 9 (DECISIONS + selftest after every hook change) → Task 7 and every task's verify step. The decisions-count guard is recorded as rejected in row 57.
 - Placeholder scan: none.
 - Consistency: check count 33 → 36 (T1) → 37 (T2) → 39 (T3) → 42 (T4); env var name `CLAUDE_MEMORY_HARNESS_DISABLED` everywhere; marker dir `claude-memory-harness` with files `reminder-<id>` / `precompact-<id>` in both hooks and the selftest.
+
+## Outcome (2026-09-30)
+
+All tasks executed on branch `harness/pwf-adoptions`, one commit per task. The `--live` run after Task 6 caught a regression the fixtures could not: the seed placeholder `docs/superpowers/plans/YYYY-MM-DD-feature.md` tripped the stale-reference advisory in every fresh install. Fixed by making placeholders non-path-shaped and adding a seed-hygiene check, so the final count is 43 checks, not 42.
