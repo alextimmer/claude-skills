@@ -15,7 +15,8 @@
           {
             "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/session-context.sh\"",
-            "timeout": 10
+            "timeout": 10,
+            "statusMessage": "Memory harness: orienting session"
           }
         ]
       }
@@ -27,7 +28,8 @@
           {
             "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/memory-reminder.sh\"",
-            "timeout": 10
+            "timeout": 10,
+            "statusMessage": "Memory harness: checking for unrecorded lessons"
           }
         ]
       }
@@ -39,7 +41,8 @@
           {
             "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/pre-compact.sh\"",
-            "timeout": 10
+            "timeout": 10,
+            "statusMessage": "Memory harness: save-gate before compaction"
           }
         ]
       }

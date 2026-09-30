@@ -142,6 +142,15 @@ check_not "optout: stop hook disabled -> no block"      '"decision":"block"' "$(
 check_not "optout: precompact disabled -> no block"     '"decision":"block"' "$(pcpayload od2 | CLAUDE_MEMORY_HARNESS_DISABLED=1 CLAUDE_PROJECT_DIR="$PROJ_STALE" bash "$PRECOMPACT_HOOK")"
 check_not "optout: sessionstart disabled -> no output"  "Open TODOs"         "$(echo '{}' | CLAUDE_MEMORY_HARNESS_DISABLED=1 CLAUDE_PROJECT_DIR="$PROJ" bash "$START_HOOK")"
 
+# --- settings.json: wires all three hooks, each with a spinner statusMessage ---
+SETTINGS="$HERE/../settings.json"
+[ "$(grep -c '"command": "bash' "$SETTINGS" 2>/dev/null)" -eq 3 ] \
+  && { echo "PASS: settings: three bash hook commands wired"; PASS=$((PASS+1)); } \
+  || { echo "FAIL: settings: expected exactly three bash hook commands in $SETTINGS"; FAIL=$((FAIL+1)); }
+[ "$(grep -c '"statusMessage"' "$SETTINGS" 2>/dev/null)" -eq 3 ] \
+  && { echo "PASS: settings: every hook entry carries a statusMessage"; PASS=$((PASS+1)); } \
+  || { echo "FAIL: settings: expected three statusMessage fields in $SETTINGS"; FAIL=$((FAIL+1)); }
+
 # --- SessionStart hook: conditional advisories (stale refs, age stamp, seeded note) ---
 OUT_REFS=$(echo '{}' | CLAUDE_PROJECT_DIR="$PROJ_REFS" bash "$START_HOOK")
 check "start: dead file reference in memory -> stale-ref advisory" "Stale memory references" "$OUT_REFS"
