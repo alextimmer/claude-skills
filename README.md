@@ -26,6 +26,7 @@ Inside any Claude Code session (CLI or VS Code extension):
 
 # 2. Install whichever plugin(s) you want
 /plugin install claude-memory-harness@claude-skills
+/plugin install reviewing-prs@claude-skills
 /plugin install mbb-deck-plugin@claude-skills
 
 # 3. Apply
@@ -50,7 +51,7 @@ Updates flow automatically: the plugins deliberately omit the `version` field, s
 
 ```mermaid
 flowchart LR
-    A["SessionStart hook<br/>orients: branch, changes,<br/>open TODOs"] --> B["Work<br/>CLAUDE.md triggers:<br/>update memory AS YOU GO"]
+    A["SessionStart hook<br/>orients: branch, changes, open TODOs<br/>audits caps, flags stale paths"] --> B["Work<br/>CLAUDE.md triggers:<br/>update memory AS YOU GO"]
     B --> C["📓 .claude/rules/*.md<br/>decisions · sessions · attribution"]
     B --> D["Stop hook<br/>lesson detected but not recorded?<br/>→ block once, write it down"]
     D --> C
@@ -64,14 +65,42 @@ flowchart LR
 **What you get:**
 
 - 📋 **`CLAUDE.md` template** — standing instructions with a memory trigger table ("update as you go, not at the end") and a TDD-mandatory workflow default
-- 📓 **Three-file memory** — durable *decisions* (incl. "Ruled out" dead ends and a "Candidates" quarantine), a rolling *session log* with an "Open TODOs" micro-backlog and size caps, and a dated + attributed entry format (`## YYYY-MM-DD: Description [Agent]`) that keeps multi-agent workspaces auditable
-- 🪝 **Three tested hooks** — SessionStart orientation (with cap audit + post-compaction flush), a block-once PreCompact save-gate that makes memory get written *before* compaction discards the details, and a block-once Stop reminder that reads the actual transcript
-- ✅ **A 43-check self-test** — hook behavior is machine-verified, not asserted — plus a secret scan for memory files before they get committed
+- 📓 **Three-file memory** — durable *decisions* (incl. "Ruled out" dead ends and a "Candidates" quarantine), a rolling *session log* with an "Open TODOs" micro-backlog (plus `Active plan:` and `Handoff:` pointer lines to files that are read on demand instead of auto-loaded) and size caps, and a dated + attributed entry format (`## YYYY-MM-DD: Description [Agent]`) that keeps multi-agent workspaces auditable
+- 🪝 **Three tested hooks** — SessionStart orientation (with cap audit + post-compaction flush), a block-once PreCompact save-gate that makes memory get written *before* compaction discards the details, and a block-once Stop reminder that reads the actual transcript. Each shows a spinner status while it runs, keeps its once-per-session marker in the user's private cache, and `CLAUDE_MEMORY_HARNESS_DISABLED=1` silences all three for CI and one-shot `claude -p` runs
+- ✅ **A 43-check self-test** — hook behavior is machine-verified, not asserted, including a latency check per hook (a fire over 5 s fails, because Claude Code silently drops hooks past their timeout); `--live` fires the installed hooks in the real repo and reports what each emitted and how long it took — plus a secret scan for memory files before they get committed
+- 🛡️ **Memory is data, not instructions** — the template frames the auto-loaded memory files as notes, forbids pasting external content into them, and keeps one writer per file (subagents report lessons, the main session records them)
 - 🤖 **The `memory-harness` skill** — say *"install my harness"* in any repo and Claude installs, adapts, and verifies the whole thing for you (asking first whether it should be team-shared or kept out of git via `.git/info/exclude`)
 
 Installing the plugin adds the *installer* — your repos stay untouched until you ask for the harness in one of them. Design rationale for every choice lives in [`DECISIONS.md`](plugins/claude-memory-harness/DECISIONS.md); manual install and verification steps in [`INSTALL.md`](plugins/claude-memory-harness/INSTALL.md).
 
 **Requirements:** bash + grep + sed (Linux/macOS: built-in; Windows: Git Bash — see the [plugin README](plugins/claude-memory-harness/README.md)).
+
+---
+
+### 🔍 reviewing-prs
+
+> One review method for Azure DevOps, GitHub and GitLab: the host is detected from the git remote, the scripts talk REST with the token your git credential helper already holds, and nothing reaches the PR until you have seen the exact text and said yes.
+
+```mermaid
+flowchart LR
+    A["fetch_pr.py<br/>metadata, iterations,<br/>threads, related PRs"] --> B["Changeset<br/>iteration base → head,<br/>two-dot"]
+    B --> C["Verify, don't read<br/>+ routed generators:<br/>domain skills, code-review"]
+    C --> D["render_review.py<br/>review.md + review.json,<br/>anchors checked on head"]
+    D --> E["Gate<br/>dry run → show → yes"]
+    E -->|only on yes| F["post_review.py<br/>one batch, no vote"]
+    G["PreToolUse hook<br/>denies posting, fixing<br/>or voting around the gate"] -.-> E
+```
+
+**What you get:**
+
+- 🎯 **The authoritative changeset** — diffed from the PR's own iteration base to its head, so the target branch's commits are never attributed to the PR; rebases, force-pushes and stacked PRs are called out
+- 📍 **Verified, clickable findings** — every finding severity-marked (🔴 MAJOR · 🟠 MEDIUM · 🟡 MINOR), anchored to a code line on the PR head with three links (host file view, PR Files view, IDE-relative), and carrying a paste-ready comment with a one-click `suggestion` block when the fix is concrete
+- 🧭 **Per-project routing** — `.claude/review-routing.md` maps changed paths to the domain skills and the built-in `code-review` / `security-review` that act as finding generators; Discovery proposes the table on the first review and writes it only after you confirm. Generator findings are claims: re-verified on the head or retracted visibly
+- 📚 **Documentation checks** — product facts a finding rests on are checked against vendor docs and cited with page, section and verbatim sentence
+- 🚦 **A hard approval gate** — Draft → Show (dry run) → Approve (one yes) → Post, one batch, and the vote is always yours to cast in the UI. A PreToolUse hook declared in the skill's frontmatter denies `code-review --comment/--fix`, posting without a prior dry run of the same file, and any `gh pr review` / `glab mr approve` / ADO vote call; a 12-case self-test covers it
+- 🔁 **Re-reviews** — prior findings are checked in code, not in the author's reply, and retracted plainly when the author was right
+
+**Requirements:** Python 3.12+ with PyYAML, git with a credential helper that holds a token for the host (sign in once with `git fetch`), Git Bash on Windows for the hook. No `gh`, `glab` or `az` needed. Details in the [plugin README](plugins/reviewing-prs/README.md).
 
 ---
 
@@ -99,7 +128,7 @@ plugins/<plugin-name>/skills/<skill-name>/
 
 Zip *just that folder* (the zip's root must be the skill folder itself, with `SKILL.md` directly inside). Pre-built zips may be attached to [Releases](https://github.com/alextimmer/claude-skills/releases).
 
-> **Why not the memory harness?** Its skill installs files, wires hooks, and runs shell self-tests in a local repository — none of which exist on Claude.ai.
+> **Why not the memory harness or reviewing-prs?** Their skills install files, wire hooks, run shell self-tests and Python scripts against a local git checkout — none of which exist on Claude.ai.
 
 ## 🗺️ Repository structure
 
@@ -116,6 +145,7 @@ claude-skills/
 │   │   │   └── plugin.json
 │   │   ├── agents/               ← subagents for this plugin (Claude Code only)
 │   │   ├── commands/             ← slash commands (Claude Code only)
+│   │   ├── hooks/                ← hooks.json + the storyline validator hook
 │   │   └── skills/
 │   │       └── mbb-deck/         ← the actual skill — this is what gets uploaded to Claude.ai
 │   │           ├── SKILL.md
@@ -123,17 +153,25 @@ claude-skills/
 │   │           ├── examples/
 │   │           ├── references/
 │   │           └── scripts/
-│   └── claude-memory-harness/    ← project memory harness (Claude Code only)
+│   ├── claude-memory-harness/    ← project memory harness (Claude Code only)
+│   │   ├── .claude-plugin/
+│   │   │   └── plugin.json
+│   │   ├── template/             ← the payload the skill copies into target repos
+│   │   │   ├── CLAUDE.md
+│   │   │   └── .claude/          ← settings.json + hooks/ + rules/ (inert here; active once installed)
+│   │   ├── skills/
+│   │   │   └── memory-harness/   ← the installer/maintenance skill (SKILL.md + references/)
+│   │   ├── research/             ← maintainer notes on sources and comparisons
+│   │   ├── INSTALL.md            ← human install guide
+│   │   └── DECISIONS.md          ← design rationale (choice → why)
+│   └── reviewing-prs/            ← PR/MR review skill (Claude Code only)
 │       ├── .claude-plugin/
 │       │   └── plugin.json
-│       ├── template/             ← the payload the skill copies into target repos
-│       │   ├── CLAUDE.md
-│       │   └── .claude/          ← settings.json + hooks/ + rules/ (inert here; active once installed)
-│       ├── skills/
-│       │   └── memory-harness/   ← the installer/maintenance skill (SKILL.md + references/)
-│       ├── INSTALL.md            ← human install guide
-│       └── DECISIONS.md          ← design rationale (choice → why)
-├── docs/                         ← repo-level docs + README assets (never ships with a plugin)
+│       └── skills/
+│           └── reviewing-prs/    ← the method (SKILL.md), output template, routing example
+│               ├── scripts/      ← fetch_pr.py, anchor.py, render_review.py, post_review.py, hosts.py
+│               └── hooks/        ← review-guard.sh (approval gate) + its self-test
+├── docs/                         ← repo-level docs, README assets, maintainer plans (never ships with a plugin)
 ├── evals/
 │   ├── mbb-deck/                 ← maintainer evals per skill (trigger-accuracy prompts)
 │   └── memory-harness/
@@ -151,7 +189,7 @@ claude-skills/
 1. Create `plugins/<new-plugin>/` with `.claude-plugin/plugin.json`, plus any `agents/`, `commands/`, and `skills/<skill>/` folders.
 2. Add a new entry to the `plugins` array in `.claude-plugin/marketplace.json`.
 3. (Optional) Create `evals/<skill-name>/` for trigger-accuracy tests.
-4. Update this README's plugin table.
+4. Update this README's plugin table, the quick-start install list, and add a section for the plugin.
 5. Validate, then commit. Users with the marketplace already added will see the new plugin immediately.
 
 </details>
@@ -170,6 +208,13 @@ This catches naming errors, JSON parse issues, and frontmatter problems across a
 ```bash
 bash plugins/claude-memory-harness/template/.claude/hooks/selftest.sh
 # -> 43 passed, 0 failed
+```
+
+For reviewing-prs, run the gate's self-test:
+
+```bash
+bash plugins/reviewing-prs/skills/reviewing-prs/hooks/selftest-review-guard.sh
+# -> 12 passed, 0 failed
 ```
 
 </details>
