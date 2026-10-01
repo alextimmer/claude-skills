@@ -1,0 +1,111 @@
+# Compact review source for render_review.py. The reviewer writes WHAT; the script renders
+# review.md (template, three clickable links per anchor) and review.json (for post_review.py).
+# Anchors: "full/repo/path:line" or "path:line-end". Severity: MAJOR | MEDIUM | MINOR.
+
+pr: 123
+head: 0123456789abcdef0123456789abcdef01234567      # SRC from fetch_pr.py
+base: fedcba9876543210fedcba9876543210fedcba98      # BASE from fetch_pr.py
+title: Feature/example
+source: feature/example
+target: develop
+iteration_note: iteration 3                          # or "version 2" (GitLab) / "head after 1 force-push" (GitHub)
+base_note: stable                                    # or "moved: rebased"
+files_note: 42 files
+threads_note: 3 threads
+fetched: 2026-10-01                                  # date of documentation lookups
+
+goal:
+  this_pr: >
+    One paragraph restating the intent, including the design decision that shapes the change.
+  where_it_sits: >
+    The overarching problem the series solves, the chain in merge order, siblings, follow-up
+    tickets, and which part this PR takes on. "standalone" when nothing is related.
+
+related:                                             # from fetch_pr.py's "related PRs" block; include this PR; omit when standalone
+  - order: 1
+    pr: 120
+    title: Feature/base
+    branch: feature/base -> develop
+    relation: this one stacks on it (contains its head abc1234, merged in at def5678)
+    overlap: inherited
+    state: iteration 7, Approve with suggestions pending
+  - order: 2
+    pr: 123                                          # == pr above -> rendered as "(this)"
+    branch: feature/example -> develop
+    state: iteration 3
+  - order: 3
+    pr: 125
+    title: Docs on top
+    branch: docs/on-top -> develop
+    relation: stacked on this one (contains head 0123456)
+    overlap: inherited
+    state: iteration 2
+
+verdict: Wait for author                             # Approve | Approve with suggestions | Wait for author | Request changes
+verdict_reason: One sentence why.
+verdict_expanded: What must happen before completing.
+# vote: optional override; otherwise derived from severities per host (SKILL.md table)
+
+verified:
+  - text: dbt parse green on SRC (42 models)
+  - text: the retry loop re-raises after logging
+    anchor: src/app.py:40
+  - text: "maximum timeout is 7 days, not 1"
+    source: S1
+
+prior:                                               # re-review only; omit for a first review
+  - severity: 🟠
+    claim: credential committed (thread 4711)
+    anchor: tools/s3_get.py:42
+    status: ✅ Fixed by deleting the file; key still in history, rotate (reply below)
+
+findings:
+  - severity: MAJOR
+    title: except-pass swallows the timeout
+    anchor: src/app.py:42
+    extra_anchors: [src/app.py:40]
+    followup: fix in PR                              # fix in PR | ticket? | 🎫 ABC-12 | reply | (empty)
+    found_by: code-review                            # optional
+    security: false                                  # true -> 🔒
+    body: |
+      Mandatory in-depth explanation: mechanism, impact, evidence (commands, outputs, lines read on SRC).
+    claims:                                          # optional, only when product facts were checked
+      - claim: "Snowflake allows up to 86400000, one day"
+        verdict: "❌ contradicted: 0 to 604800000 (7 days)"
+        source: S1
+    comment: |
+      Paste-ready text for the author, at most one url, suggestion block when the fix is concrete:
+      ```suggestion
+              except TimeoutError as err:
+                  log.warning("request timed out: %s", err)
+                  raise
+      ```
+    sources: [S1]                                    # optional, listed under the finding
+  - severity: MINOR
+    title: typo in the assertion message
+    anchor: tests/test_app.py:12
+    reply_to: 4711                                   # existing thread id -> comment becomes a reply, no new thread
+    comment: |
+      Re-checked on iteration 3: fixed. Thread can be resolved.
+    body: |
+      Why this is a reply and not a new thread.
+
+sources:
+  S1:
+    title: Snowflake docs, CREATE TASK, USER_TASK_TIMEOUT_MS
+    quote: "Values: 0 - 604800000 (7 days)"
+    url: https://docs.snowflake.com/en/sql-reference/sql/create-task
+
+summary_extra:                                       # ✅ rows and anything not a finding
+  - anchor: parse, render, ancestry
+    severity: ✅
+    text: verified, see above
+
+housekeeping: |
+  Threads to resolve, reviewers, description, merge order.
+generators_consulted: |
+  routing confirmed <date>; code-review effort=medium on <range>; security-review as sub-task; skipped heavy: …
+retracted: |
+  code-review: <claim> -> duplicate of thread 4711
+could_not_verify: |
+  nothing ran against Snowflake; the author's measurements.

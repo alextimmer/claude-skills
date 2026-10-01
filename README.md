@@ -8,7 +8,7 @@
 
 [![License: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/License-PolyForm_Noncommercial_1.0.0-blue.svg)](https://polyformproject.org/licenses/noncommercial/1.0.0)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-plugin_marketplace-d97757.svg)](https://code.claude.com/docs/en/plugins)
-[![Plugins](https://img.shields.io/badge/plugins-2-brightgreen.svg)](#-the-plugins)
+[![Plugins](https://img.shields.io/badge/plugins-3-brightgreen.svg)](#-the-plugins)
 
 Add the marketplace once — every plugin, and every update, is one `/plugin install` away.
 
@@ -39,6 +39,7 @@ Updates flow automatically: the plugins deliberately omit the `version` field, s
 | Plugin | One-liner | Runs on |
 |--------|-----------|---------|
 | 🧠 [`claude-memory-harness`](plugins/claude-memory-harness/) | Give stateless Claude Code sessions a persistent, committable project memory | Claude Code only |
+| 🔍 [`reviewing-prs`](plugins/reviewing-prs/) | Review PRs/MRs on Azure DevOps, GitHub and GitLab with verified, clickable, paste-ready findings and a hard approval gate | Claude Code only |
 | 📊 [`mbb-deck-plugin`](plugins/mbb-deck-plugin/) | Build presentations the way top-tier consulting firms structure them | Claude Code + Claude.ai |
 
 ---

@@ -1,0 +1,32 @@
+{
+  "pr": 123,
+  "head": "0123456789abcdef0123456789abcdef01234567",
+  "base": "fedcba9876543210fedcba9876543210fedcba98",
+  "recommended_vote": "Wait for author",
+  "summary": "**Verdict: Wait for author.** One MAJOR finding blocks the merge.\n\n| File:line | Severity | Finding |\n|---|---|---|\n| `src/app.py:42` | 🔴 MAJOR | retry loop swallows the timeout |\n| `tests/test_app.py:12` | 🟡 MINOR | assertion message typo |\n| `src/app.py:10` | ✅ | config loaded once, verified in `load_config` |\n\n**Could not verify:** the cluster run mentioned in the description; nothing was run locally.",
+  "comments": [
+    {
+      "path": "src/app.py",
+      "line": 42,
+      "start_line": null,
+      "severity": "MAJOR",
+      "body": "🔴 **MAJOR** — `except Exception: pass` swallows the timeout raised on line 40, so a hung request is reported as success. Re-raise after logging:\n\n```suggestion\n        except TimeoutError as err:\n            log.warning(\"request timed out: %s\", err)\n            raise\n```",
+      "reply_to": null
+    },
+    {
+      "path": "tests/test_app.py",
+      "line": 12,
+      "start_line": null,
+      "severity": "MINOR",
+      "body": "🟡 **MINOR** — typo in the assertion message.\n\n```suggestion\n    assert result.ok, \"expected the request to succeed\"\n```",
+      "reply_to": null
+    },
+    {
+      "path": null,
+      "line": null,
+      "severity": "NOTE",
+      "body": "Re-checked on iteration 3: the config is now loaded once. Thread can be resolved.",
+      "reply_to": 4711
+    }
+  ]
+}

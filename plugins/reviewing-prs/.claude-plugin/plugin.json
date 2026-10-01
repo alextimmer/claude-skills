@@ -1,0 +1,22 @@
+{
+  "name": "reviewing-prs",
+  "description": "Pull-request reviews for Azure DevOps, GitHub and GitLab with one method: two-dot changeset, verify-don't-read, severity-marked findings anchored to clickable lines on the PR head, a paste-ready comment per finding, documentation checks with cited sources, project-specific delegation to domain skills and the built-in code-review/security-review, and a Draft -> Show -> Approve -> Post gate backed by a PreToolUse hook. REST via git credential fill; no gh/glab/az needed.",
+  "author": {
+    "name": "alextimmer"
+  },
+  "homepage": "https://github.com/alextimmer/claude-skills",
+  "repository": "https://github.com/alextimmer/claude-skills",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "keywords": [
+    "code-review",
+    "pull-request",
+    "merge-request",
+    "azure-devops",
+    "github",
+    "gitlab",
+    "review-gate",
+    "hooks",
+    "skills-routing"
+  ],
+  "skills": "./skills"
+}

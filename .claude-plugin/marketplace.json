@@ -3,8 +3,30 @@
   "owner": {
     "name": "alextimmer"
   },
-  "description": "A collection of Claude skills, plugins, and subagents. Includes mbb-deck-plugin (MBB-style management consulting presentations) and claude-memory-harness (project memory + hooks harness).",
+  "description": "A collection of Claude skills, plugins, and subagents. Includes mbb-deck-plugin (MBB-style management consulting presentations), claude-memory-harness (project memory + hooks harness) and reviewing-prs (PR/MR reviews for Azure DevOps, GitHub and GitLab with an approval gate).",
   "plugins": [
+    {
+      "name": "reviewing-prs",
+      "source": "./plugins/reviewing-prs",
+      "description": "PR/MR reviews for Azure DevOps, GitHub and GitLab: two-dot changeset, verified findings anchored to clickable lines, paste-ready comments with suggestion blocks, documentation checks with cited sources, per-project delegation to domain skills and the built-in code-review/security-review, and a Draft -> Show -> Approve -> Post gate backed by a PreToolUse hook.",
+      "category": "workflow",
+      "keywords": [
+        "code-review",
+        "pull-request",
+        "merge-request",
+        "azure-devops",
+        "github",
+        "gitlab",
+        "review-gate",
+        "hooks"
+      ],
+      "author": {
+        "name": "alextimmer"
+      },
+      "homepage": "https://github.com/alextimmer/claude-skills",
+      "repository": "https://github.com/alextimmer/claude-skills",
+      "license": "PolyForm-Noncommercial-1.0.0"
+    },
     {
       "name": "mbb-deck-plugin",
       "source": "./plugins/mbb-deck-plugin",
