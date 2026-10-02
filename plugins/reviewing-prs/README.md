@@ -52,6 +52,16 @@ votes. Check with `/hooks` after the first review. Self-test:
 Requirements: Python 3.12+ with PyYAML (`pip install pyyaml`; only `render_review.py` needs it, the other scripts are standard library), git with a credential helper that holds a
 token for the host (sign in once with `git fetch`), Git Bash on Windows for the hook.
 
+## Fast mode
+
+"quick review PR 1234", "fast review …" or "review … fast" runs the same method with the same
+output format in one to three minutes: no generators, no local parse/render (the PR's own build
+validation from the host's policy or check API stands in, but only when it evaluated the current
+head), no Discovery, no subagents, at most one documentation lookup when a MAJOR/MEDIUM hinges on
+it, and bulk files (the routing file's `bulk:` globs) read as `--stat` plus one sample. The review
+carries a mandatory banner line under the header and names every skipped check under *Could not
+verify*. Fast mode is never inferred from PR size; a later full review supersedes a fast one.
+
 ## First review in a repository
 
 ```

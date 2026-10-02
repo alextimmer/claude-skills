@@ -3,6 +3,7 @@
 # Anchors: "full/repo/path:line" or "path:line-end". Severity: MAJOR | MEDIUM | MINOR.
 
 pr: 123
+mode: full                                           # full (default, may be omitted) | fast -> banner line under the header
 head: 0123456789abcdef0123456789abcdef01234567      # SRC from fetch_pr.py
 base: fedcba9876543210fedcba9876543210fedcba98      # BASE from fetch_pr.py
 title: Feature/example

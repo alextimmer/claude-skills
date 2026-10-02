@@ -33,6 +33,9 @@ VOTE = {  # (any MAJOR, any MEDIUM) -> per host
     "gitlab": {"major": "Request changes", "medium": "Comment, no approval yet", "none": "Approve"},
 }
 ANCHOR = re.compile(r"^(?P<path>.+?):(?P<line>\d+)(?:-(?P<end>\d+))?$")
+# Printed under the header when review.yaml says `mode: fast`; the one place this text lives.
+FAST_BANNER = ("*Fast mode: generators, documentation checks and local builds skipped; "
+               "the PR's build validation stands in for them, see Could not verify.*")
 VERDICT_VOTE = {  # a verdict word maps straight to a vote; otherwise derive from severities
     "wait for author": "major", "request changes": "major",
     "approve with suggestions": "medium", "approve": "none",
@@ -108,6 +111,9 @@ def render_md(r: dict, host: Host) -> str:
     a(f"**\"{r['title']}\"** · `{r['source']}` → `{r['target']}` · {r.get('iteration_note', '')} · "
       f"base `{r['base'][:7]}` ({r.get('base_note', 'stable')}), src `{sha[:7]}` · {r.get('files_note', '')} · {r.get('threads_note', '')}")
     a("")
+    if str(r.get("mode", "full")).lower() == "fast":
+        a(FAST_BANNER)
+        a("")
     a("## The goal (as I read it)")
     a("")
     a(f"**This PR.** {r['goal']['this_pr'].strip()}")
@@ -242,7 +248,13 @@ def main() -> int:
     ap.add_argument("--remote", default="origin")
     args = ap.parse_args()
     src_path = Path(args.review)
-    r = yaml.safe_load(src_path.read_text(encoding="utf-8"))
+    try:
+        r = yaml.safe_load(src_path.read_text(encoding="utf-8"))
+    except yaml.YAMLError as err:
+        mark = getattr(err, "problem_mark", None)
+        where = f" at line {mark.line + 1}, column {mark.column + 1}" if mark else ""
+        sys.exit(f"{src_path.name}: YAML error{where}: {getattr(err, 'problem', err)}. "
+                 "A plain value containing ': ' must be quoted or written as a '>' / '|' block.")
     host = detect(args.remote)
     for key in ("pr", "head", "base", "title", "source", "target", "goal", "verdict", "verdict_reason"):
         if key not in r:

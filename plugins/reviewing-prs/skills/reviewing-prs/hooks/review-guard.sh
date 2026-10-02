@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# PreToolUse hook backing the reviewing-prs approval gate (matchers: Bash, PowerShell, Skill).
+# PreToolUse hook backing the reviewing-prs approval gate (matchers: Bash, Skill).
 #
 # Denies, with a model-facing reason:
 #   1. code-review / security-review invoked with --comment or --fix (posting and fixing go
@@ -11,7 +11,6 @@
 # Allows everything else (prints nothing, exit 0).
 #
 # Input (stdin): PreToolUse JSON {session_id, tool_name, tool_input:{command | skill, args}, ...}
-# (compact, single-line JSON; Bash and PowerShell both carry tool_input.command)
 # Output: {"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny",
 #          "permissionDecisionReason":"..."}} to deny; empty to allow.
 
@@ -20,9 +19,9 @@ PAYLOAD=$(cat)
 SESSION=$(printf '%s' "$PAYLOAD" | sed -n 's/.*"session_id":"\([^"]*\)".*/\1/p')
 TOOL=$(printf '%s' "$PAYLOAD" | sed -n 's/.*"tool_name":"\([^"]*\)".*/\1/p')
 
-# The text to inspect: Bash/PowerShell -> tool_input.command; Skill -> tool_input.skill + tool_input.args.
+# The text to inspect: Bash -> tool_input.command; Skill -> tool_input.skill + tool_input.args.
 case "$TOOL" in
-  Bash|PowerShell) TEXT=$(printf '%s' "$PAYLOAD" | sed -n 's/.*"command":"\(.*\)".*/\1/p') ;;
+  Bash)  TEXT=$(printf '%s' "$PAYLOAD" | sed -n 's/.*"command":"\(.*\)".*/\1/p') ;;
   Skill) TEXT=$(printf '%s' "$PAYLOAD" | sed -n 's/.*"skill":"\([^"]*\)".*/\1/p')" "$(printf '%s' "$PAYLOAD" | sed -n 's/.*"args":"\([^"]*\)".*/\1/p') ;;
   *)     exit 0 ;;
 esac

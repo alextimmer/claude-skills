@@ -16,6 +16,10 @@ the PR's Files view, the IDE-relative link). Never a bare file name.
 head after <k> force-pushes (GitHub) · base `<sha7>`(stable | moved: rebased),
 src `<sha7>` · <N> files · <M> threads
 
+*Fast mode: generators, documentation checks and local builds skipped; the PR's build validation
+stands in for them, see Could not verify.*      ← ONLY when review.yaml has `mode: fast`; the
+                                                   renderer prints it; absent in a full review
+
 ## The goal (as I read it)
 
 **This PR.** One paragraph restating the intent in your own words, including the design
@@ -113,6 +117,8 @@ for stacked PRs.
 **Generators consulted:** which routing rows applied (skills, `code-review` effort,
 `security-review`), which were skipped as `heavy` and why, and the routing file's `confirmed`
 line. "none (no routing file)" when the review ran on method and general knowledge alone.
+In fast mode exactly: "fast mode, none" plus the build-validation line that stood in for local
+verification (policy, status, evaluated SRC yes/no).
 
 **Retracted from generators:** each generator finding that did not survive verification, one
 line each: `<generator>: <claim> -> <why dropped>` (line not in diff, claim false on SRC,
@@ -122,7 +128,9 @@ duplicate of finding X, false positive). "none" when everything survived.
 above. "none" when nothing was fetched.
 
 **Could not verify:** what needed a cluster/CI/feed you had no access to, author-measured
-figures you did not reproduce, and that you ran nothing locally unless you did.
+figures you did not reproduce, and that you ran nothing locally unless you did. In fast mode
+also: every skipped check by name (generators, local parse/render, documentation lookups,
+bulk files read as stat only) and every author claim left unverified because of it.
 
 OPTIONAL — **Follow-up tickets?** <k> finding(s) marked `ticket?` in the Summary. Say
 "create tickets" to see drafts (one per finding: title, body with anchor and paste-ready text,

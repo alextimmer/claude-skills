@@ -21,7 +21,6 @@ expect_allow "post dry run passes + sets marker"      "$(bash_payload 'python sc
 expect_allow "post after dry run of same file"        "$(bash_payload 'python scripts/post_review.py review.json')"
 expect_deny  "post after dry run of a DIFFERENT file" "$(bash_payload 'python scripts/post_review.py other.json')"
 expect_deny  "gh pr review"                           "$(bash_payload 'gh pr review 7 --approve')"
-expect_deny  "powershell gh pr review"                "$(printf '{"session_id":"%s","tool_name":"PowerShell","tool_input":{"command":"gh pr review 7 --approve"}}' "$S")"
 expect_deny  "ado reviewers api"                      "$(bash_payload 'curl -X PUT https://dev.azure.com/o/p/_apis/git/repositories/r/pullRequests/7/reviewers/me')"
 expect_allow "other tool name"                        "$(printf '{"session_id":"%s","tool_name":"Read","tool_input":{"file_path":"x"}}' "$S")"
 

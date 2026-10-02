@@ -35,6 +35,51 @@ def _git(*args: str) -> str:
     return subprocess.run(["git", *args], capture_output=True, text=True).stdout.strip()
 
 
+def build_validation(c: Client, h: Host, pr_id: int, src: str) -> None:
+    """What the host's own checks say about this PR, and whether they evaluated the current SRC.
+    Fast mode cites this instead of running parse/render locally; full mode gets it as extra
+    context. Degrades to 'unavailable' on any API error."""
+    section("build validation")
+    try:
+        if h.kind == "ado":
+            proj = c.get(f"https://dev.azure.com/{h.org}/_apis/projects/{h.project}")["id"]
+            art = f"vstfs:///CodeReview/CodeReviewId/{proj}/{pr_id}"
+            ev = c.get(f"https://dev.azure.com/{h.org}/{h.project}/_apis/policy/evaluations"
+                       f"?artifactId={art}&api-version=7.1-preview.1")
+            rows = ev.get("value", [])
+            if not rows:
+                print("no branch policies evaluated for this PR")
+            for e in rows:
+                cfg = e.get("configuration", {})
+                typ = cfg.get("type", {}).get("displayName", "?")
+                ctx = e.get("context") or {}
+                line = f"{typ:28s} {str(e.get('status')):9s} blocking={cfg.get('isBlocking')}"
+                if typ == "Build":
+                    evaluated = ctx.get("lastMergeSourceCommitId", "")
+                    match = "yes" if evaluated == src else f"NO (evaluated {evaluated[:10] or '-'}, SRC is {src[:10]})"
+                    line += (f" | definition {cfg.get('settings', {}).get('buildDefinitionId')} "
+                             f"| evaluated SRC: {match}")
+                print(line)
+        elif h.kind == "github":
+            runs = c.get(f"{h.api}/commits/{src}/check-runs").get("check_runs", [])
+            for r in runs:
+                print(f"check-run {r.get('name'):28s} {str(r.get('status')):11s} {str(r.get('conclusion')):10s} | on SRC: yes")
+            st = c.get(f"{h.api}/commits/{src}/status")
+            for s in st.get("statuses", []):
+                print(f"status    {s.get('context'):28s} {str(s.get('state')):11s} | on SRC: yes")
+            if not runs and not st.get("statuses"):
+                print("no check-runs or statuses on SRC")
+        else:
+            pipes = c.get_all(f"{h.pr_api(pr_id)}/pipelines")
+            if not pipes:
+                print("no pipelines for this MR")
+            for p in pipes[:5]:
+                match = "yes" if p.get("sha") == src else f"NO (ran on {str(p.get('sha'))[:10]})"
+                print(f"pipeline {p.get('id')} {str(p.get('status')):10s} | on SRC: {match} | {p.get('web_url', '')}")
+    except SystemExit as err:
+        print(f"unavailable ({err})")
+
+
 def related_prs(c: Client, h: Host, pr_id: int, base: str, src: str, remote: str) -> None:
     """Every other open PR/MR with its relation to this one: stacked (git ancestry between the
     heads) or sibling (overlapping changed files). Heads are fetched locally; failures degrade to
@@ -229,6 +274,7 @@ def main() -> None:
     base, src = {"ado": fetch_ado, "github": fetch_github, "gitlab": fetch_gitlab}[host.kind](client, host, args.pr_id)
 
     subprocess.run(["git", "fetch", "-q", args.remote, base, src], check=True)
+    build_validation(client, host, args.pr_id, src)
     try:
         related_prs(client, host, args.pr_id, base, src, args.remote)
     except SystemExit as err:  # an API error in the related-PR lookup must not abort the review

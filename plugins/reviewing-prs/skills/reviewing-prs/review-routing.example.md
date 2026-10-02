@@ -8,6 +8,7 @@ generated: 2026-10-01 by reviewing-prs discovery
 confirmed: <name>, 2026-10-01
 code_review: effort=medium
 max_files: 400
+bulk: src/dbt/*/*/models/**, src/schemachange/*/*/scripts/programmable/R__0[0-9][0-9][0-9]_load_*.sql   # fast mode only: read as --stat + one sample per group; full mode ignores this key
 
 | Paths (glob, first match wins per file) | Generators, in order | Flags | Why |
 |---|---|---|---|
