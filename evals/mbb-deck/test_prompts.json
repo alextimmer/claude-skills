@@ -78,6 +78,16 @@
       "id": "trigger-15",
       "prompt": "Build a 12-slide deck recommending our market entry strategy. Cover situation, complication, options, recommendation, and implementation.",
       "rationale": "SCQA structure + standard MBB deck shape"
+    },
+    {
+      "id": "trigger-16",
+      "prompt": "I need a pre-read deck for next week's investment committee: cover, a one-page summary and a few supporting slides, ending with the decisions we need.",
+      "rationale": "Decision pre-read as slides, with decision needs at the close"
+    },
+    {
+      "id": "trigger-17",
+      "prompt": "Build the slides for our steering committee update. They should lead with the recommendation and close with next steps and owners.",
+      "rationale": "Steering committee deck, answer first, next steps with owners"
     }
   ],
   "should_not_trigger": [
@@ -147,6 +157,7 @@
     "False-positive rate target: at most 10% of should_not_trigger prompts should activate it.",
     "If trigger rate is too low, make the SKILL.md description more specific about the linguistic cues (board, executive, recommendation, strategy, consulting).",
     "If false-positive rate is too high, add explicit counter-examples to the description ('Do not trigger for casual/creative presentations, lecture slides, photo decks').",
-    "Borderline case 'no-trigger-11' (training deck) is debatable — adjust based on what behavior you want."
+    "Borderline case 'no-trigger-11' (training deck) is debatable — adjust based on what behavior you want.",
+    "Boundary with executive-storyline: slides come here; an executive summary, memo, email or spoken update goes to executive-storyline (see evals/executive-storyline/). 'no-trigger-10' (a neutral transcript summary) should trigger neither."
   ]
 }

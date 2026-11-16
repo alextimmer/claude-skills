@@ -1,0 +1,97 @@
+{
+  "$schema": "Test prompts for measuring whether the work-brief skill triggers correctly. Run these through the skill_creator eval harness or a similar tool.",
+  "skill": "work-brief",
+  "expected_trigger_rate_min": 0.85,
+  "expected_no_trigger_rate_min": 0.90,
+  "should_trigger": [
+    {
+      "id": "trigger-01",
+      "prompt": "Write a brief for the agency that will design our annual report presentation.",
+      "rationale": "Names a brief and an external recipient"
+    },
+    {
+      "id": "trigger-02",
+      "prompt": "I want another AI tool to draft the steering committee summary from these files. Write me the prompt for it.",
+      "rationale": "A prompt for an AI tool that will do the drafting"
+    },
+    {
+      "id": "trigger-03",
+      "prompt": "How do I brief my analyst so that I get a recommendation back and not a data dump?",
+      "rationale": "'How do I brief' plus the classic failure the skill addresses"
+    },
+    {
+      "id": "trigger-04",
+      "prompt": "I need to hand the market study over to a junior colleague while I am on leave. Help me write down what they need.",
+      "rationale": "Delegation and handover of work, no 'brief' keyword"
+    },
+    {
+      "id": "trigger-05",
+      "prompt": "Check this prompt before I send it: 'Summarize the attached documents for the board.'",
+      "rationale": "Check mode on an existing prompt"
+    },
+    {
+      "id": "trigger-06",
+      "prompt": "Draft the instructions for the contractor who builds the pricing model: what we need, by when, and what is out of scope.",
+      "rationale": "Instructions for a contractor with scope and deadline"
+    },
+    {
+      "id": "trigger-07",
+      "prompt": "My last three delegated decks all came back wrong. What is missing from my briefings?",
+      "rationale": "Reviewing how the user briefs others"
+    },
+    {
+      "id": "trigger-08",
+      "prompt": "Write an analysis brief for the team: we need to find out why returns doubled.",
+      "rationale": "Analysis brief, the answer is not known yet"
+    }
+  ],
+  "should_not_trigger": [
+    {
+      "id": "no-trigger-01",
+      "prompt": "Write the executive summary for the steering committee from these files.",
+      "rationale": "The user wants the document itself: executive-storyline"
+    },
+    {
+      "id": "no-trigger-02",
+      "prompt": "Prepare a briefing note for the CEO ahead of tomorrow's customer meeting.",
+      "rationale": "An informational briefing for an executive is an executive summary, not a work brief"
+    },
+    {
+      "id": "no-trigger-03",
+      "prompt": "Build a board deck recommending the market entry.",
+      "rationale": "Deck creation: mbb-deck"
+    },
+    {
+      "id": "no-trigger-04",
+      "prompt": "What is prompt engineering?",
+      "rationale": "Definitional question"
+    },
+    {
+      "id": "no-trigger-05",
+      "prompt": "Write a system prompt for my customer-support chatbot.",
+      "rationale": "Application prompt design, not a brief for a piece of work"
+    },
+    {
+      "id": "no-trigger-06",
+      "prompt": "Brief me on what happened in the project last week.",
+      "rationale": "'Brief me' asks for information, not for a brief to be written"
+    },
+    {
+      "id": "no-trigger-07",
+      "prompt": "Write a legal brief for the appeal.",
+      "rationale": "'Brief' in the legal sense"
+    },
+    {
+      "id": "no-trigger-08",
+      "prompt": "Assign these five tickets to the team and set due dates.",
+      "rationale": "Task assignment in a tracker, no brief"
+    }
+  ],
+  "notes": [
+    "Trigger rate target: at least 85% of should_trigger prompts should activate the skill.",
+    "False-positive rate target: at most 10% of should_not_trigger prompts should activate it.",
+    "The word 'brief' has three false-positive senses: 'brief me' (inform me), a briefing note for an executive (an executive summary), and a legal brief.",
+    "False-negative trap: delegation described without the word 'brief' (trigger-04, trigger-07).",
+    "Boundary: if the user wants the document, it is executive-storyline or mbb-deck; if the user wants someone else to produce the document, it is work-brief."
+  ]
+}

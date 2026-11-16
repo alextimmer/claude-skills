@@ -126,16 +126,40 @@ For decks longer than ~10 slides, help the audience keep the map in their head:
 
 - **Callouts and bubbles** for remarks on specific chart elements
 - **Takeaway boxes** for the slide's overall conclusion
+- **Concern boxes** (`callout` on any content slide) — one or two lines in an outlined box above the footer, answering a stakeholder's main concern on the page where it arises, or stating a caveat: "Why this differs from the March figure: the March estimate excluded billing." Outline only, no fill. At most one per slide, and only where a reader would otherwise stop and ask
+- **Page names** (`name` on any slide) — "the savings page". Metadata for references from the executive summary, the email or the conversation; never printed on the slide, so they add no clutter
 - **Icons** for scannability (monochrome, one style, accent or gray only)
 - **Status stickers** — PRELIMINARY, INDICATIVE, FOR DISCUSSION, ILLUSTRATIVE — whenever numbers are not final. Use them honestly: they manage expectations and protect credibility.
 
 ## Pattern 9 — Executive summary slide
 
-This slide is special. It is the entire deck on one page.
+This slide is special. It is the entire deck on one page. Every reader reads it and many read little else, so it has to carry the whole message.
 
 Structure:
 - Action title at top: the governing thought
-- Body: 3–5 sub-points, each one sentence, each corresponding to a major section of the deck
+- **Context** (`context`): situation and complication in at most two sentences
+- **Arguments** (`supporting_points`): 3–5 points, one per major section of the deck, in the deck's order. Each opens with a **bold lead** that mirrors the section's action title, followed by the key numbers
+- **Decision needs** (`decisions`, `why_now`): for decision documents, the decisions in their own box — numbered, one line each — with the deadline that forces them
 - No chart, no decoration
 
+Rules:
+- **Mirror the document.** The summary follows the deck's structure, so the reader can navigate from it. If in doubt, it is the condensed sequence of the action titles.
+- **Quantify.** "$14M a year against budget" convinces; "significant upside" does not.
+- **Answer first, content not process.** Not "we ran a tender and a customer test", but what they showed.
+- **Same numbers, same words** as the pages that follow. The validator flags a summary figure that appears on no other page.
+
 **This is the most important slide in the deck.** If the audience reads only one slide, this is the one.
+
+## Pattern 10 — Decisions and next steps slide (`type: decisions`)
+
+The closing page of a senior document: what is asked of the reader. A table, like every slide — rows are decisions, columns are decision, safeguard, owner, by when — followed by "why now" and the next steps.
+
+**When to use:** the last page before the appendix in any `board`, `decision_pre_read` or `external` document. The validator warns when it is missing.
+
+**Rules:**
+- Each decision is a sentence that can be approved or rejected ("Approve the SMB tier sunset over 18 months"), not a topic to discuss
+- At most five decisions; three is typical — decide what this meeting can realistically settle
+- Pair each decision with its **safeguard**: the answer to the main concern behind it
+- State **why now**: the deadline or event that forces the decisions
+- Next steps carry task, owner and date
+- The wording matches the decisions box on the executive summary exactly

@@ -1,6 +1,6 @@
 {
   "name": "mbb-deck-plugin",
-  "description": "Build presentations in the structural style of top-tier management consulting firms (McKinsey, Bain, BCG): Pyramid Principle storylines, action titles, MECE structure, and minimal executive-grade visuals.",
+  "description": "Build presentations in the structural style of top-tier management consulting firms (McKinsey, Bain, BCG): Pyramid Principle storylines, action titles, MECE structure, and minimal executive-grade visuals. Includes a storyline skill for executive summaries, memos, pre-reads and emails to leadership and a work-brief skill for briefing whoever will do the work.",
   "author": {
     "name": "alextimmer"
   },
@@ -15,6 +15,9 @@
     "pyramid-principle",
     "strategy",
     "deck",
-    "executive"
+    "executive",
+    "executive-summary",
+    "storyline",
+    "brief"
   ]
 }

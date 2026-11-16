@@ -8,14 +8,18 @@ The four options:
 |---|---|---|---|
 | A | Structured Markdown outline | None — Claude writes it inline | User builds the deck themselves in PowerPoint, Keynote, or Google Slides |
 | B | Marp markdown | None — Claude writes Marp-compatible `.md` directly | User works in Marp (markdown-based slide tooling, version-controlled decks, exports to HTML/PDF/PPTX via Marp CLI) |
-| C | Native `.pptx` via an environment PowerPoint capability | Official Anthropic `pptx` skill, claude.ai file creation, or a PowerPoint add-in | The environment can create `.pptx` natively and Option D's requirements are not met |
-| D | `.pptx` via bundled Python script | `scripts/build_deck.py` + Python with `python-pptx` | User has Python 3.9+ with `python-pptx` (Claude Code), **or the session runs on claude.ai** — its sandbox has `python-pptx` preinstalled and runs the bundled scripts with zero setup |
+| C | Native file via the environment's own capability | Whatever the host provides: built-in file creation (Cowork, claude.ai), a PowerPoint or Google Slides integration, an installed presentation skill, the user's template tooling | **Default wherever such a capability exists.** The environment makes the file its usual way; this skill supplies storyline, content and style guidance |
+| D | `.pptx` via bundled Python script | `scripts/build_deck.py` + Python with `python-pptx` | Claude Code, CI and similar setups where a deterministic deck from a storyline JSON is wanted, or the user asks for it |
 
 ## The decision
 
-If the user hasn't said which they want, ask once:
+**First: does the environment have its own way to make presentations?** A desktop agent or chat with built-in file creation (Claude Cowork, claude.ai), a PowerPoint or Google Slides integration, an installed presentation skill, or the user's own template tooling. If so, use it the way it normally works — that is Option C — and do not ask the user to pick a renderer or route the deck through this skill's scripts. This skill contributes the storyline, the slide content and the style guidance; the environment contributes the file.
 
-> Which format do you want the deck in? I can produce: (a) a structured Markdown outline you can paste into PowerPoint or Keynote, (b) Marp markdown, (c) a real `.pptx` via your environment's native PowerPoint capability (the official pptx skill or claude.ai's file creation), or (d) a styled `.pptx` via the bundled Python script (needs Python with `python-pptx` locally — or nothing at all on claude.ai).
+Options A, B and D exist for decks made in other tooling: an outline to paste, Marp, or the bundled Python renderer for Claude Code and CI.
+
+Only if neither the environment nor the user's context settles it, ask once:
+
+> Which format do you want the deck in? I can produce: (a) a structured Markdown outline you can paste into PowerPoint or Keynote, (b) Marp markdown, or (c) a styled `.pptx` via the bundled Python script (needs Python with `python-pptx`).
 
 If the user has given context that implies a format, infer:
 
@@ -23,7 +27,7 @@ If the user has given context that implies a format, infer:
 - They mentioned Marp, version control, GitHub Pages publishing, or "markdown decks" → Option B
 - The `pptx` skill or other PowerPoint tools are visible in the environment, or they mentioned a PowerPoint plugin/add-in → Option C
 - They explicitly asked for a `.pptx` and have Python available → Option D
-- The session is running on claude.ai and they want a `.pptx` → Option D (bundled scripts run in the sandbox, deterministic MBB styling); Option C (native file creation) if they prefer it
+- The environment creates files or presentations natively (Cowork, claude.ai) and they want a deck → Option C, with the environment's usual tooling. Option D only if they ask for the bundled script
 
 ## Option A — Structured Markdown outline
 
@@ -44,10 +48,14 @@ The user builds the deck themselves. You produce a markdown document like this:
 **Action title:** [governing thought]
 **Framing line:** [methodology / sample / scope]
 
+Context: [situation and complication, two sentences]
+
 Supporting points:
-1. ...
+1. **[Lead mirroring section 1]** ...
 2. ...
 3. ...
+
+Decisions needed: 1. ... 2. ...   Why now: ...
 
 Source: ...
 
@@ -61,6 +69,8 @@ Source: ...
 
 ...
 ```
+
+A `decisions` slide is written out as its table (decision, safeguard, owner, by when), the "why now" line, and the next steps (task, owner, date).
 
 The user can copy each slide block into PowerPoint or Keynote one slide at a time. No tooling required on either end.
 
@@ -81,10 +91,13 @@ Choose Marp when the user wants:
 - **Official Anthropic `pptx` skill** — in Claude Code: `/plugin marketplace add anthropics/skills`, then `/plugin install document-skills@anthropic-agent-skills`; appears as the `pptx` skill.
 - **claude.ai file creation** — Claude's built-in code-execution sandbox creates `.pptx` files directly (feature: "Create and edit files").
 - **Claude's Office add-ins** — when the user works inside PowerPoint itself with Claude's add-in.
+- **Other agent environments (for example Claude Cowork)** — use whatever presentation tooling the environment brings. This skill makes no assumption about it and adds no requirement to it.
 
 Detect availability by: the user mentioning one of these, a `pptx` skill or PowerPoint tools visible in the environment, or the user asking for a `.pptx` when Option D's requirements aren't met.
 
-When you hand off, give the renderer the structured content (action titles, framing lines, body content, sources) **plus the renderer handoff brief below** — native renderers know nothing about MBB conventions, so the style contract must be stated as explicit constraints. Run the Step 7 QA pass on whatever comes back.
+When you hand off, give the renderer the structured content (action titles, framing lines, body content, sources) **plus the renderer handoff brief below** — native renderers know nothing about MBB conventions. Run the Step 7 QA pass on whatever comes back.
+
+**The user's template wins.** The typography and palette in the brief are defaults for a deck with no house style. If the user has a corporate template, a brand palette, or the environment applies its own design system, follow that and drop the conflicting lines of the brief. The content rules (one message per slide, action titles, framing lines, sources, no decoration) stay.
 
 ## Option D — `.pptx` via `build_deck.py`
 
@@ -92,7 +105,7 @@ The bundled Python script. See `scripts/REQUIREMENTS.md` for setup. This is the 
 
 When this is right:
 - The user has Python set up and confirms it
-- **The session runs on claude.ai** — `python-pptx` is preinstalled in the code-execution sandbox and the skill's bundled scripts execute there, so this option needs zero setup (runtime package installation is NOT supported there, but none is needed)
+- The user asks for it in an environment where Python with `python-pptx` is already present
 - They want consistent styling across many decks (CI-friendly)
 - They want palette options (navy / red / green / neutral) without manual styling
 
@@ -118,11 +131,15 @@ the slide-by-slide content from the storyline JSON, always pass this style contr
   over legends; y-axis from zero unless relative change IS the point.
 - **Every slide (except title):** framing line under the action title; source line
   bottom-left (`Source: ...`), page number bottom-right, both ~9pt gray.
+- **Executive summary and decisions slides:** supporting points keep their bold leads
+  (`**lead**` in the JSON means bold, not literal asterisks); the decision needs sit in
+  an outlined box without a fill; the decisions slide is a plain table whose only
+  filled element is the header row.
 - **Forbidden:** stock photos, clip art, decorative icons, gradients, animations,
   more than one idea per slide.
 
-State these as explicit constraints in the handoff (or the generation prompt), not as
-hopes. If the renderer produced the deck, still run the Step 7 QA pass — `qa-reviewer`
+State these in the handoff (or the generation prompt) — as constraints when no template
+governs the look, as defaults to be overridden when one does. If the renderer produced the deck, still run the Step 7 QA pass — `qa-reviewer`
 checks the result, not the pipeline that made it.
 
 ## On falling back gracefully

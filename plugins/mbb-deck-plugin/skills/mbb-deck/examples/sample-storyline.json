@@ -7,6 +7,40 @@
     "prepared_by": "Strategy Team",
     "palette": "navy",
     "confidentiality": "Confidential — Acme internal",
+    "document_type": "board",
+    "audience": "Acme Board of Directors; decides on the 2026 growth budget. Main concern: SMB customers churning during the sunset.",
+    "objective": "Approval of three decisions at the April 2026 board meeting",
+    "question": "Where should Acme invest its 2026 growth budget to restart double-digit growth?",
+    "stakeholders": [
+      {
+        "name": "Board of Directors",
+        "role": "decides",
+        "current_stage": "understands",
+        "target_stage": "acts",
+        "main_concern": "SMB customers churning during the sunset"
+      }
+    ],
+    "key_figures": [
+      {
+        "name": "ARR added by enterprise expansion",
+        "value": "$40M",
+        "measure": "additional annual recurring revenue (estimate)",
+        "reference": "FY25 ARR",
+        "period": "24 months, to end-2027",
+        "lever": "move upmarket to enterprise HR",
+        "status": "estimate",
+        "source": "Strategy team financial model, March 2026"
+      },
+      {
+        "name": "SMB cost to serve",
+        "value": "$14M",
+        "measure": "fully loaded cost to serve the SMB tier",
+        "reference": "absolute",
+        "period": "per year, FY24",
+        "status": "actual",
+        "source": "Acme financials FY24; cost-to-serve analysis, March 2026"
+      }
+    ],
     "governing_thought": "Acme should move upmarket to enterprise HR in 2026, funded by sunsetting the SMB tier — adding an estimated $40M ARR over 24 months."
   },
   "slides": [
@@ -16,14 +50,22 @@
     {
       "type": "exec_summary",
       "title": "Acme should move upmarket to enterprise HR in 2026, funded by sunsetting SMB — adding an estimated $40M ARR over 24 months",
+      "context": "Acme has been a top-3 player in US mid-market HR software for five years. The board must now decide where to invest the 2026 growth budget to restart double-digit growth.",
       "supporting_points": [
-        "Growth has stalled at 3% for two years while three competitors have grown 25%+ by moving upmarket",
-        "The enterprise segment is $4.2B and growing 18% — three times our current addressable market",
-        "Two of our top-30 customers already use Acme above 500 employees and would expand within 12 months",
-        "The product gap to enterprise-ready is six features, deliverable in three quarters with current capacity",
-        "The SMB tier costs $14M annually to serve and is contribution-margin negative in 60% of accounts"
+        "**Growth has stalled at 3%** for two years while three competitors have grown 25%+ by moving upmarket",
+        "**The enterprise segment is $4.2B** and growing 18% — three times our current addressable market",
+        "**Two of our top-30 customers** already use Acme above 500 employees and would expand within 12 months",
+        "**The product gap is six features**, deliverable in three quarters with current capacity",
+        "**The SMB tier costs $14M annually** to serve and is contribution-margin negative in 60% of accounts"
       ],
-      "source": "Strategy team analysis; Acme financials FY24"
+      "decisions": [
+        "Approve the move upmarket to enterprise HR as the 2026 growth priority",
+        "Approve the SMB tier sunset over 18 months, starting in Q2 2026",
+        "Release the budget for 3 enterprise sales hires in Q2 2026"
+      ],
+      "why_now": "The 9-month feature lead holds only if the build starts in Q2 2026",
+      "source": "Strategy team analysis; Acme financials FY24",
+      "name": "the summary page"
     },
     {
       "type": "bullets",
@@ -38,14 +80,15 @@
     },
     {
       "type": "bullets",
-      "title": "Growth has stalled at 3% for two years while three competitors have grown 25%+ by moving upmarket",
+      "title": "The enterprise segment is $4.2B and growing 18% — three times our current addressable market",
+      "framing_line": "US HR software for companies with 500+ employees; market sizing from Gartner 2024",
       "bullets": [
-        "Acme ARR has grown ~3% in both years (3.1% FY23, 3.4% FY24), versus a five-year average of 14%",
-        "Three named competitors have each grown 25%+ annually, crossing $300M ARR by adding enterprise tiers since 2023",
-        "Net revenue retention has fallen from 118% to 102% over the same period",
-        "Customer count has grown, but average contract value has compressed by 11%"
+        "Enterprise HR software in the US is a $4.2B market, growing 18% a year",
+        "Acme's current mid-market addressable market is one third of that size",
+        "Two of our top-30 customers already use Acme above 500 employees and would expand within 12 months"
       ],
-      "source": "Acme financials FY23–FY24; competitor 10-K filings"
+      "source": "Gartner 2024; Acme customer data FY24; customer interviews, Feb 2026",
+      "name": "the market page"
     },
     {
       "type": "two_by_two",
@@ -96,7 +139,7 @@
     },
     {
       "type": "mece_buckets",
-      "title": "We evaluated four growth paths against three criteria; only enterprise expansion meets all three",
+      "title": "Of four growth paths, only enterprise expansion meets all three criteria",
       "buckets": [
         {
           "name": "Enterprise expansion",
@@ -178,7 +221,8 @@
         }
       ],
       "recommended": 0,
-      "source": "Strategy team scoring, March 2026"
+      "source": "Strategy team scoring, March 2026",
+      "name": "the options page"
     },
     {
       "type": "value_chain",
@@ -201,13 +245,30 @@
           "description": "Public APIs and webhooks at SLA"
         }
       ],
-      "source": "Engineering capacity plan, FY26"
+      "source": "Engineering capacity plan, FY26",
+      "name": "the capabilities page"
     },
     {
       "type": "quote",
       "quote": "Acme has the best mid-market HR product we've used. The day they support our European subsidiaries, we'll triple our spend.",
       "attribution": "VP People, Top-10 Acme customer (1,200 employees)",
       "source": "Customer interview, Feb 2026"
+    },
+    {
+      "type": "bullets",
+      "title": "The SMB tier costs $14M annually to serve and is contribution-margin negative in 60% of accounts",
+      "framing_line": "Fully loaded cost to serve by account, Acme financials FY24",
+      "bullets": [
+        "Serving the SMB tier costs $14M a year across support, onboarding and billing",
+        "60% of SMB accounts are contribution-margin negative after cost to serve",
+        "Sunsetting the tier over 18 months frees the $14M that funds the enterprise build"
+      ],
+      "source": "Acme financials FY24; cost-to-serve analysis, March 2026",
+      "name": "the SMB page",
+      "callout": {
+        "label": "What protects SMB revenue during the sunset",
+        "text": "An 18-month transition period and a partner referral program; the tier leaves the price list only in Q3–Q4 2026."
+      }
     },
     {
       "type": "chart",
@@ -247,7 +308,56 @@
           ]
         }
       ],
-      "source": "Implementation plan, March 2026"
+      "source": "Implementation plan, March 2026",
+      "name": "the roadmap page"
+    },
+    {
+      "type": "decisions",
+      "title": "The board is asked for three decisions in April 2026 so that the build starts in Q2 2026",
+      "framing_line": "Each decision is paired with the safeguard that answers its main risk",
+      "decisions": [
+        {
+          "decision": "Approve the move upmarket to enterprise HR as the 2026 growth priority",
+          "detail": "Six features in three quarters with current engineering capacity",
+          "safeguard": "Go/no-go review after the first 5 enterprise wins",
+          "owner": "CEO",
+          "deadline": "April 2026"
+        },
+        {
+          "decision": "Approve the SMB tier sunset over 18 months, starting in Q2 2026",
+          "detail": "Frees the $14M a year that funds the enterprise build",
+          "safeguard": "18-month transition period and partner referral program",
+          "owner": "COO",
+          "deadline": "April 2026"
+        },
+        {
+          "decision": "Release the budget for 3 enterprise sales hires in Q2 2026",
+          "detail": "Sales cycles of 6–9 months require hiring before the product is ready",
+          "safeguard": "Existing top-30 accounts as anchor customers",
+          "owner": "CRO",
+          "deadline": "April 2026"
+        }
+      ],
+      "why_now": "The 9-month feature lead over competitors holds only if the build starts in Q2 2026.",
+      "next_steps": [
+        {
+          "task": "Start SSO & SCIM beta",
+          "owner": "CTO",
+          "date": "Q2 2026"
+        },
+        {
+          "task": "Begin SMB sunset communication to customers and partners",
+          "owner": "COO",
+          "date": "Q2 2026"
+        },
+        {
+          "task": "Report the first 5 enterprise wins to the board",
+          "owner": "CRO",
+          "date": "Q4 2026"
+        }
+      ],
+      "source": "Implementation plan, March 2026; risk review with executive team, March 2026",
+      "name": "the decisions page"
     },
     {
       "type": "section",
@@ -257,7 +367,7 @@
       "type": "bullets",
       "title": "Key risks and mitigations span three categories: sales cycle, customer churn, and competitive response",
       "bullets": [
-        "Enterprise sales cycle (6–9 months): mitigated by leveraging existing top-30 accounts as anchor customers",
+        "Enterprise sales cycle (6–9 months): mitigated by using existing top-30 accounts as anchor customers",
         "SMB churn during sunset: mitigated by 18-month transition period and partner referral program",
         "Competitive response: mitigated by 9-month feature lead and existing customer relationships"
       ],

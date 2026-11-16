@@ -43,7 +43,150 @@
         },
         "governing_thought": {
           "type": "string",
-          "description": "The single-sentence answer the deck supports. Documented for human review; not directly rendered."
+          "description": "The single-sentence answer the deck supports (also called the key message). Documented for human review; not directly rendered."
+        },
+        "document_type": {
+          "type": "string",
+          "enum": [
+            "team_alignment",
+            "recurring_update",
+            "board",
+            "decision_pre_read",
+            "external",
+            "documentation",
+            "keynote"
+          ],
+          "description": "What the document is for. Calibrates validate_storyline.py: 'decision_pre_read' is cover + executive summary + up to four pages; 'board', 'decision_pre_read' and 'external' must close with a 'decisions' slide. See references/storyline.md."
+        },
+        "audience": {
+          "type": "string",
+          "description": "Who decides and who influences, and each decision maker's main concern, as free text. Enough for most documents; use 'stakeholders' when several decision makers stand in different places. For review; not rendered."
+        },
+        "objective": {
+          "type": "string",
+          "description": "What the audience should do after reading (e.g. 'approval of three decisions on 12 May'). For review; not rendered."
+        },
+        "question": {
+          "type": "string",
+          "description": "The one question the complication raises and the governing thought answers. For review; not rendered."
+        },
+        "stakeholders": {
+          "type": "array",
+          "minItems": 1,
+          "description": "OPTIONAL structured audience. Worth filling for decision documents with several decision makers or a contested message; skip it otherwise. For review; not rendered.",
+          "items": {
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Person or body, e.g. 'CFO'."
+              },
+              "role": {
+                "type": "string",
+                "enum": [
+                  "decides",
+                  "influences",
+                  "informed"
+                ]
+              },
+              "current_stage": {
+                "type": "string",
+                "enum": [
+                  "unaware",
+                  "aware",
+                  "understands",
+                  "buys_in",
+                  "acts"
+                ],
+                "description": "Where they stand on the commitment ladder today."
+              },
+              "target_stage": {
+                "type": "string",
+                "enum": [
+                  "unaware",
+                  "aware",
+                  "understands",
+                  "buys_in",
+                  "acts"
+                ],
+                "description": "Where they must be after this document."
+              },
+              "main_concern": {
+                "type": "string",
+                "description": "The objection to answer on a page before it is raised (callout or safeguard)."
+              }
+            }
+          }
+        },
+        "key_figures": {
+          "type": "array",
+          "minItems": 1,
+          "description": "OPTIONAL definitions of the headline figures: what each number measures, against which reference, for which period. Worth filling when the governing thought rests on a number. validate_storyline.py checks that each is fully defined, appears on a page in identical form, and reconciles with its components. For review; not rendered.",
+          "items": {
+            "type": "object",
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Short label, e.g. 'SMB cost to serve'."
+              },
+              "value": {
+                "type": "string",
+                "description": "The figure exactly as written on the pages, e.g. '$14M'."
+              },
+              "measure": {
+                "type": "string",
+                "description": "What is measured, e.g. 'annual fully loaded cost to serve the SMB tier'."
+              },
+              "reference": {
+                "type": "string",
+                "description": "What the figure is stated against: a baseline (budget, prior year, do-nothing case), a benchmark, a target, or 'absolute' for a plain level. Use the reader's own reference."
+              },
+              "period": {
+                "type": "string",
+                "description": "The period it covers, e.g. 'FY24' or 'per year from FY27'."
+              },
+              "by_when": {
+                "type": "string",
+                "description": "For targets: when it is reached."
+              },
+              "lever": {
+                "type": "string",
+                "description": "What produces the effect. Name all levers if several act together."
+              },
+              "status": {
+                "type": "string",
+                "description": "How firm the figure is, e.g. 'actual', 'estimate', 'preliminary'."
+              },
+              "source": {
+                "type": "string"
+              },
+              "components": {
+                "type": "array",
+                "minItems": 2,
+                "description": "The parts the figure is made of, when it is a sum. They must add up to 'value' and share its measure.",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "value"
+                  ],
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -79,6 +222,9 @@
             "$ref": "#/definitions/roadmap"
           },
           {
+            "$ref": "#/definitions/decisions"
+          },
+          {
             "$ref": "#/definitions/section"
           },
           {
@@ -97,6 +243,10 @@
       "properties": {
         "type": {
           "const": "title"
+        },
+        "name": {
+          "type": "string",
+          "description": "OPTIONAL page name for references ('the savings page'). Metadata only: never rendered on the slide. Must be unique."
         }
       }
     },
@@ -125,10 +275,48 @@
             "type": "string"
           },
           "minItems": 3,
-          "maxItems": 5
+          "maxItems": 5,
+          "description": "One point per argument (section), in document order. A point may open with a **bold lead** that mirrors the section's action title, followed by the key numbers."
         },
         "source": {
           "type": "string"
+        },
+        "context": {
+          "type": "string",
+          "description": "Situation and complication in at most two sentences, rendered above the supporting points."
+        },
+        "decisions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "maxItems": 5,
+          "description": "Decision needs, one line each, rendered in their own box. Must match the 'decisions' slide that closes the document."
+        },
+        "why_now": {
+          "type": "string",
+          "description": "The deadline or event that forces the decisions."
+        },
+        "name": {
+          "type": "string",
+          "description": "OPTIONAL page name for references ('the savings page'). Metadata only: never rendered on the slide. Must be unique."
+        },
+        "callout": {
+          "type": "object",
+          "required": [
+            "text"
+          ],
+          "description": "OPTIONAL outlined box above the footer: answers a stakeholder's main concern on the page, or states a caveat (e.g. why a figure differs from one quoted earlier). One or two lines.",
+          "properties": {
+            "label": {
+              "type": "string",
+              "description": "Bold lead, e.g. 'Why this differs from the March figure'."
+            },
+            "text": {
+              "type": "string"
+            }
+          }
         }
       }
     },
@@ -160,6 +348,26 @@
         },
         "source": {
           "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "description": "OPTIONAL page name for references ('the savings page'). Metadata only: never rendered on the slide. Must be unique."
+        },
+        "callout": {
+          "type": "object",
+          "required": [
+            "text"
+          ],
+          "description": "OPTIONAL outlined box above the footer: answers a stakeholder's main concern on the page, or states a caveat (e.g. why a figure differs from one quoted earlier). One or two lines.",
+          "properties": {
+            "label": {
+              "type": "string",
+              "description": "Bold lead, e.g. 'Why this differs from the March figure'."
+            },
+            "text": {
+              "type": "string"
+            }
+          }
         }
       }
     },
@@ -239,6 +447,26 @@
         },
         "source": {
           "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "description": "OPTIONAL page name for references ('the savings page'). Metadata only: never rendered on the slide. Must be unique."
+        },
+        "callout": {
+          "type": "object",
+          "required": [
+            "text"
+          ],
+          "description": "OPTIONAL outlined box above the footer: answers a stakeholder's main concern on the page, or states a caveat (e.g. why a figure differs from one quoted earlier). One or two lines.",
+          "properties": {
+            "label": {
+              "type": "string",
+              "description": "Bold lead, e.g. 'Why this differs from the March figure'."
+            },
+            "text": {
+              "type": "string"
+            }
+          }
         }
       }
     },
@@ -284,6 +512,26 @@
         },
         "source": {
           "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "description": "OPTIONAL page name for references ('the savings page'). Metadata only: never rendered on the slide. Must be unique."
+        },
+        "callout": {
+          "type": "object",
+          "required": [
+            "text"
+          ],
+          "description": "OPTIONAL outlined box above the footer: answers a stakeholder's main concern on the page, or states a caveat (e.g. why a figure differs from one quoted earlier). One or two lines.",
+          "properties": {
+            "label": {
+              "type": "string",
+              "description": "Bold lead, e.g. 'Why this differs from the March figure'."
+            },
+            "text": {
+              "type": "string"
+            }
+          }
         }
       }
     },
@@ -339,6 +587,26 @@
         },
         "source": {
           "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "description": "OPTIONAL page name for references ('the savings page'). Metadata only: never rendered on the slide. Must be unique."
+        },
+        "callout": {
+          "type": "object",
+          "required": [
+            "text"
+          ],
+          "description": "OPTIONAL outlined box above the footer: answers a stakeholder's main concern on the page, or states a caveat (e.g. why a figure differs from one quoted earlier). One or two lines.",
+          "properties": {
+            "label": {
+              "type": "string",
+              "description": "Bold lead, e.g. 'Why this differs from the March figure'."
+            },
+            "text": {
+              "type": "string"
+            }
+          }
         }
       }
     },
@@ -360,6 +628,10 @@
         },
         "source": {
           "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "description": "OPTIONAL page name for references ('the savings page'). Metadata only: never rendered on the slide. Must be unique."
         }
       }
     },
@@ -400,6 +672,26 @@
         },
         "source": {
           "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "description": "OPTIONAL page name for references ('the savings page'). Metadata only: never rendered on the slide. Must be unique."
+        },
+        "callout": {
+          "type": "object",
+          "required": [
+            "text"
+          ],
+          "description": "OPTIONAL outlined box above the footer: answers a stakeholder's main concern on the page, or states a caveat (e.g. why a figure differs from one quoted earlier). One or two lines.",
+          "properties": {
+            "label": {
+              "type": "string",
+              "description": "Bold lead, e.g. 'Why this differs from the March figure'."
+            },
+            "text": {
+              "type": "string"
+            }
+          }
         }
       }
     },
@@ -444,6 +736,26 @@
         },
         "source": {
           "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "description": "OPTIONAL page name for references ('the savings page'). Metadata only: never rendered on the slide. Must be unique."
+        },
+        "callout": {
+          "type": "object",
+          "required": [
+            "text"
+          ],
+          "description": "OPTIONAL outlined box above the footer: answers a stakeholder's main concern on the page, or states a caveat (e.g. why a figure differs from one quoted earlier). One or two lines.",
+          "properties": {
+            "label": {
+              "type": "string",
+              "description": "Bold lead, e.g. 'Why this differs from the March figure'."
+            },
+            "text": {
+              "type": "string"
+            }
+          }
         }
       }
     },
@@ -459,6 +771,10 @@
         },
         "title": {
           "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "description": "OPTIONAL page name for references ('the savings page'). Metadata only: never rendered on the slide. Must be unique."
         }
       }
     },
@@ -502,6 +818,126 @@
         },
         "source": {
           "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "description": "OPTIONAL page name for references ('the savings page'). Metadata only: never rendered on the slide. Must be unique."
+        },
+        "callout": {
+          "type": "object",
+          "required": [
+            "text"
+          ],
+          "description": "OPTIONAL outlined box above the footer: answers a stakeholder's main concern on the page, or states a caveat (e.g. why a figure differs from one quoted earlier). One or two lines.",
+          "properties": {
+            "label": {
+              "type": "string",
+              "description": "Bold lead, e.g. 'Why this differs from the March figure'."
+            },
+            "text": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "decisions": {
+      "type": "object",
+      "required": [
+        "type",
+        "title",
+        "decisions"
+      ],
+      "description": "Decision needs and next steps: the closing page of a senior document.",
+      "properties": {
+        "type": {
+          "const": "decisions"
+        },
+        "title": {
+          "type": "string"
+        },
+        "framing_line": {
+          "type": "string",
+          "description": "Optional subtitle under the action title — typically methodology, sample size, or logic ('Based on n=240 interviews', 'Acme analysis vs. industry')"
+        },
+        "decisions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "required": [
+              "decision"
+            ],
+            "properties": {
+              "decision": {
+                "type": "string",
+                "description": "What is to be approved, chosen or released, as one sentence. Not 'discuss X'."
+              },
+              "detail": {
+                "type": "string",
+                "description": "One line of supporting detail."
+              },
+              "safeguard": {
+                "type": "string",
+                "description": "The answer to the main concern behind this decision."
+              },
+              "owner": {
+                "type": "string"
+              },
+              "deadline": {
+                "type": "string",
+                "description": "By when the decision is needed."
+              }
+            }
+          }
+        },
+        "why_now": {
+          "type": "string",
+          "description": "The deadline or event that forces the decisions."
+        },
+        "next_steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "task"
+            ],
+            "properties": {
+              "task": {
+                "type": "string"
+              },
+              "owner": {
+                "type": "string"
+              },
+              "date": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "source": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "description": "OPTIONAL page name for references ('the savings page'). Metadata only: never rendered on the slide. Must be unique."
+        },
+        "callout": {
+          "type": "object",
+          "required": [
+            "text"
+          ],
+          "description": "OPTIONAL outlined box above the footer: answers a stakeholder's main concern on the page, or states a caveat (e.g. why a figure differs from one quoted earlier). One or two lines.",
+          "properties": {
+            "label": {
+              "type": "string",
+              "description": "Bold lead, e.g. 'Why this differs from the March figure'."
+            },
+            "text": {
+              "type": "string"
+            }
+          }
         }
       }
     }

@@ -10,7 +10,13 @@ These evals let you measure trigger accuracy and refine the description with dat
 
 ## What's in here
 
-- `test_prompts.json` — 15 prompts that should trigger the skill and 12 that shouldn't, with rationale for each.
+- `test_prompts.json` — 17 prompts that should trigger the skill and 12 that shouldn't, with rationale for each.
+- `test_validate_storyline.py` — 39 cases for `validate_storyline.py`: each mutates the sample storyline and asserts the expected message, severity and exit code (document types, the decision-needs close, process titles, filler wording, executive-summary number drift, and the optional structures: stakeholders, key figures, page names, callouts). Needs only Python:
+
+  ```bash
+  python evals/mbb-deck/test_validate_storyline.py
+  # -> 39 passed, 0 failed
+  ```
 
 ## How to run
 

@@ -41,7 +41,7 @@ Updates flow automatically: the plugins deliberately omit the `version` field, s
 |--------|-----------|---------|
 | 🧠 [`claude-memory-harness`](plugins/claude-memory-harness/) | Give stateless Claude Code sessions a persistent, committable project memory | Claude Code only |
 | 🔍 [`reviewing-prs`](plugins/reviewing-prs/) | Review PRs/MRs on Azure DevOps, GitHub and GitLab with verified, clickable, paste-ready findings and a hard approval gate | Claude Code only |
-| 📊 [`mbb-deck-plugin`](plugins/mbb-deck-plugin/) | Build presentations the way top-tier consulting firms structure them | Claude Code + Claude.ai |
+| 📊 [`mbb-deck-plugin`](plugins/mbb-deck-plugin/) | Build presentations and executive summaries the way top-tier consulting firms structure them | Claude Code + Claude.ai |
 
 ---
 
@@ -106,17 +106,20 @@ flowchart LR
 
 ### 📊 mbb-deck-plugin
 
-> Build presentations in the structural style of top-tier management consulting firms: Pyramid Principle storylines, action titles, MECE structure, and minimal executive-grade visuals.
+> Build presentations in the structural style of top-tier management consulting firms: Pyramid Principle storylines, action titles, MECE structure, and minimal executive-grade visuals. A second skill applies the same storyline method to executive summaries, memos, pre-reads and emails to leadership.
 
 **What you get:**
 
-- 🗂️ **`/storyline`** — develop a Pyramid-Principle storyline before any slide is written
-- 🔍 **`/critique-deck`** — structured critique of an existing deck (six named review tests)
+- 🗂️ **`/storyline`** — develop a Pyramid-Principle storyline before any slide is written: audience and objective first, then governing thought, SCQA, action titles and the decision needs
+- 🔍 **`/critique-deck`** — structured critique of an existing deck (ten named review tests, judged against the document type)
+- **`/exec-summary`** — condense a finished deck or document into the email, one-pager or spoken update that travels with it, with every number traced back to the source
 - 🤖 **Seven subagents** — including `storyline-reviewer` and `qa-reviewer` for adversarial review passes
-- 🎨 **A complete skill** — slide patterns, visual style rules, palettes (plus a dense consulting-print profile), icons, and a `build_deck.py` renderer
-- ✅ **Deterministic enforcement** — a storyline validator that auto-runs via hook the moment a storyline JSON is written, and `lint_deck.py`, which mechanically checks any finished `.pptx` (fonts, sizes, colors, alignment, page numbers — and the hard pie-chart ban) regardless of which renderer produced it
+- 🎨 **A complete skill** — slide patterns (including the executive summary with its decision box, a decisions-and-next-steps closing page, and a concern box that answers a stakeholder's objection on the page where it arises), visual style rules, palettes (plus a dense consulting-print profile), icons, and a `build_deck.py` renderer
+- **The `executive-storyline` skill** — the storyline method for anything that is not a slide: executive summaries, memos, board papers, pre-reads, emails to leadership and spoken updates. Three modes (create, condense, feedback), document types with different bars, and a prose lint for filler wording, process statements and a missing ask
+- **The `work-brief` skill** — writes or checks the brief for someone who will do the work (an AI tool, a colleague, an agency): role and audience, objective, key message, structure, facts and limits, so that a recommendation comes back and not a summary of the files
+- ✅ **Deterministic enforcement** — a storyline validator that auto-runs via hook the moment a storyline JSON is written (it also flags process titles, executive-summary figures no page backs up, senior documents that end without decision needs, and headline figures that are undefined or do not reconcile), and `lint_deck.py`, which mechanically checks any finished `.pptx` (fonts, sizes, colors, alignment, page numbers — and the hard pie-chart ban) regardless of which renderer produced it
 
-Also usable on **Claude.ai** — see below.
+Also usable on **Claude.ai** and in agent environments such as Claude Cowork — the skills need no tooling and leave rendering to whatever the environment uses for slides; the bundled Python and Marp paths are for decks made in other tooling. See below.
 
 ## 🌐 Using a skill on Claude.ai (without Claude Code)
 
@@ -126,7 +129,7 @@ Plugins marked *Claude Code + Claude.ai* expose a skill folder you can upload di
 plugins/<plugin-name>/skills/<skill-name>/
 ```
 
-Zip *just that folder* (the zip's root must be the skill folder itself, with `SKILL.md` directly inside). Pre-built zips may be attached to [Releases](https://github.com/alextimmer/claude-skills/releases).
+Zip *just that folder* (the zip's root must be the skill folder itself, with `SKILL.md` directly inside). `mbb-deck-plugin` has three such folders, `mbb-deck`, `executive-storyline` and `work-brief`; each works on its own, and uploading both lets the deck skill hand over to the storyline skill for summaries and emails. Pre-built zips may be attached to [Releases](https://github.com/alextimmer/claude-skills/releases).
 
 > **Why not the memory harness or reviewing-prs?** Their skills install files, wire hooks, run shell self-tests and Python scripts against a local git checkout — none of which exist on Claude.ai.
 
@@ -144,15 +147,21 @@ claude-skills/
 │   │   ├── .claude-plugin/
 │   │   │   └── plugin.json
 │   │   ├── agents/               ← subagents for this plugin (Claude Code only)
-│   │   ├── commands/             ← slash commands (Claude Code only)
+│   │   ├── commands/             ← slash commands: /storyline, /critique-deck, /exec-summary (Claude Code only)
 │   │   ├── hooks/                ← hooks.json + the storyline validator hook
 │   │   └── skills/
-│   │       └── mbb-deck/         ← the actual skill — this is what gets uploaded to Claude.ai
-│   │           ├── SKILL.md
-│   │           ├── assets/
-│   │           ├── examples/
-│   │           ├── references/
-│   │           └── scripts/
+│   │       ├── mbb-deck/         ← the deck skill — this is what gets uploaded to Claude.ai
+│   │       │   ├── SKILL.md
+│   │       │   ├── assets/
+│   │       │   ├── examples/
+│   │       │   ├── references/
+│   │       │   └── scripts/
+│   │       ├── executive-storyline/  ← storyline method for summaries, memos, pre-reads, emails (also uploadable)
+│   │       │   ├── SKILL.md
+│   │       │   ├── examples/
+│   │       │   ├── references/
+│   │       │   └── scripts/      ← lint_prose.py
+│   │       └── work-brief/       ← the brief for an AI tool, a colleague or an agency (also uploadable)
 │   ├── claude-memory-harness/    ← project memory harness (Claude Code only)
 │   │   ├── .claude-plugin/
 │   │   │   └── plugin.json
@@ -174,6 +183,8 @@ claude-skills/
 ├── docs/                         ← repo-level docs, README assets, maintainer plans (never ships with a plugin)
 ├── evals/
 │   ├── mbb-deck/                 ← maintainer evals per skill (trigger-accuracy prompts)
+│   ├── executive-storyline/
+│   ├── work-brief/
 │   └── memory-harness/
 ├── LICENSE
 └── README.md
@@ -208,6 +219,13 @@ This catches naming errors, JSON parse issues, and frontmatter problems across a
 ```bash
 bash plugins/claude-memory-harness/template/.claude/hooks/selftest.sh
 # -> 43 passed, 0 failed
+```
+
+For mbb-deck-plugin, run the storyline validator's tests (Python only):
+
+```bash
+python evals/mbb-deck/test_validate_storyline.py
+# -> 39 passed, 0 failed
 ```
 
 For reviewing-prs, run the gate's self-test:

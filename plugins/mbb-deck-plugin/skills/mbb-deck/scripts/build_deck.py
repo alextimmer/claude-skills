@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -36,11 +37,11 @@ ASSETS_DIR = SKILL_ROOT / "assets"
 
 
 def load_palettes() -> dict:
-    return json.loads((ASSETS_DIR / "palettes.json").read_text())
+    return json.loads((ASSETS_DIR / "palettes.json").read_text(encoding="utf-8"))
 
 
 def load_style() -> dict:
-    return json.loads((ASSETS_DIR / "style_config.json").read_text())
+    return json.loads((ASSETS_DIR / "style_config.json").read_text(encoding="utf-8"))
 
 
 def hex_to_rgb(hex_str: str) -> RGBColor:
@@ -123,6 +124,102 @@ class DeckBuilder:
         if color_hex:
             run.font.color.rgb = hex_to_rgb(color_hex)
         return tb
+
+    def _add_rich_text(
+        self,
+        slide,
+        x_in,
+        y_in,
+        w_in,
+        h_in,
+        text,
+        font_size=14,
+        color_hex=None,
+        anchor=MSO_ANCHOR.TOP,
+        space_after_pt=0,
+    ):
+        """Text box that honors **bold** spans and newlines (one paragraph each).
+
+        Used where a line carries a bold lead followed by regular text: the
+        executive summary's argument bullets and the decision rows.
+        """
+        tb = slide.shapes.add_textbox(
+            Inches(x_in), Inches(y_in), Inches(w_in), Inches(h_in)
+        )
+        tf = tb.text_frame
+        tf.word_wrap = True
+        tf.vertical_anchor = anchor
+        tf.margin_left = tf.margin_right = Emu(0)
+        tf.margin_top = tf.margin_bottom = Emu(0)
+        color = hex_to_rgb(color_hex or self.palette["body_text"])
+        for i, line in enumerate(str(text).split("\n")):
+            p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
+            p.alignment = PP_ALIGN.LEFT
+            p.space_after = Pt(space_after_pt)
+            for k, part in enumerate(re.split(r"\*\*(.+?)\*\*", line)):
+                if not part:
+                    continue
+                run = p.add_run()
+                run.text = part
+                run.font.size = Pt(font_size)
+                run.font.bold = k % 2 == 1
+                run.font.name = self.style["typography"]["body_font"]
+                run.font.color.rgb = color
+        return tb
+
+    def _add_rule(self, slide, x_in, y_in, w_in, color_hex=None):
+        """Thin horizontal separator between table rows."""
+        rule = slide.shapes.add_shape(
+            MSO_SHAPE.RECTANGLE, Inches(x_in), Inches(y_in), Inches(w_in), Pt(0.75)
+        )
+        rule.fill.solid()
+        rule.fill.fore_color.rgb = hex_to_rgb(color_hex or self.palette["neutral_light"])
+        rule.line.fill.background()
+        rule.shadow.inherit = False
+        return rule
+
+    # Callout geometry: a strip between the body and the footer
+    CALLOUT_TOP_IN = 6.2
+    CALLOUT_HEIGHT_IN = 0.65
+    NO_CALLOUT_TYPES = ("title", "quote", "section", "section_divider")
+
+    def _has_callout(self, spec) -> bool:
+        callout = spec.get("callout")
+        return isinstance(callout, dict) and bool(callout.get("text"))
+
+    def _add_callout(self, slide, spec):
+        """Outlined box above the footer: answers a concern or states a caveat.
+
+        No fill (fills are reserved for header rows); the outline alone sets it
+        apart from the body. The label, if given, is the bold lead.
+        """
+        callout = spec["callout"]
+        margin = self.style["slide"]["margin_in"]
+        width = self.style["slide"]["width_in"] - 2 * margin
+        box = slide.shapes.add_shape(
+            MSO_SHAPE.RECTANGLE,
+            Inches(margin),
+            Inches(self.CALLOUT_TOP_IN),
+            Inches(width),
+            Inches(self.CALLOUT_HEIGHT_IN),
+        )
+        box.fill.background()
+        box.line.color.rgb = hex_to_rgb(self.palette["neutral_mid"])
+        box.line.width = Pt(0.75)
+        box.shadow.inherit = False
+        label = callout.get("label")
+        text = f"**{label}:** {callout['text']}" if label else str(callout["text"])
+        self._add_rich_text(
+            slide,
+            margin + 0.15,
+            self.CALLOUT_TOP_IN,
+            width - 0.3,
+            self.CALLOUT_HEIGHT_IN,
+            text,
+            # the framing line's size, so the callout adds no further text size
+            font_size=self.style["typography"]["framing_line_pt"],
+            anchor=MSO_ANCHOR.MIDDLE,
+        )
 
     def _add_action_title(self, slide, title_text, framing_line=None):
         sp = self.style["spacing"]
@@ -290,10 +387,63 @@ class DeckBuilder:
         sp = self.style["spacing"]
 
         self._add_action_title(slide, spec["title"], spec.get("framing_line"))
-        # Supporting points as numbered list with accent number markers
         points = spec.get("supporting_points", [])
         body_top = self._body_top(bool(spec.get("framing_line")))
-        avail_h = self.style["slide"]["height_in"] - body_top - 1.0
+        bottom = self.style["slide"]["height_in"] - 1.0
+        if self._has_callout(spec):
+            bottom = self.CALLOUT_TOP_IN - 0.15
+        width = slide_w - 2 * margin
+
+        # Context: situation and complication in at most two sentences
+        context = spec.get("context")
+        if context:
+            self._add_rich_text(
+                slide,
+                margin,
+                body_top,
+                width,
+                0.6,
+                context,
+                font_size=ty["exec_summary_point_pt"],
+                color_hex=self.palette["neutral_dark"],
+            )
+            body_top += 0.7
+
+        # Decision needs: their own outlined box at the foot of the page
+        decisions = spec.get("decisions") or []
+        why_now = spec.get("why_now")
+        if decisions:
+            lines = ["**Decisions needed**"] + [
+                f"{i + 1}. {d}" for i, d in enumerate(decisions)
+            ]
+            if why_now:
+                lines.append(f"**Why now:** {why_now}")
+            box_h = 0.21 * len(lines) + 0.3
+            box_y = bottom - box_h
+            box = slide.shapes.add_shape(
+                MSO_SHAPE.RECTANGLE,
+                Inches(margin),
+                Inches(box_y),
+                Inches(width),
+                Inches(box_h),
+            )
+            box.fill.background()
+            box.line.color.rgb = hex_to_rgb(self.palette["accent"])
+            box.line.width = Pt(1)
+            box.shadow.inherit = False
+            self._add_rich_text(
+                slide,
+                margin + 0.15,
+                box_y + 0.12,
+                width - 0.3,
+                box_h - 0.2,
+                "\n".join(lines),
+                font_size=12,
+            )
+            bottom = box_y - 0.15
+
+        # Supporting points as numbered list with accent number markers
+        avail_h = bottom - body_top
         line_h = min(0.7, avail_h / max(len(points), 1))
         for i, pt in enumerate(points):
             y = body_top + i * line_h
@@ -311,7 +461,8 @@ class DeckBuilder:
                 align=PP_ALIGN.LEFT,
                 anchor=MSO_ANCHOR.MIDDLE,
             )
-            self._add_text(
+            # A point may open with a **bold lead** mirroring its section title
+            self._add_rich_text(
                 slide,
                 margin + 0.6,
                 y,
@@ -322,6 +473,130 @@ class DeckBuilder:
                 color_hex=self.palette["body_text"],
                 anchor=MSO_ANCHOR.MIDDLE,
             )
+        self._add_footer(slide, spec.get("source"))
+
+    def render_decisions(self, spec):
+        """Decision needs and next steps: the closing page of a senior document.
+
+        A table (rows = decisions; columns = decision, safeguard, owner, by
+        when), the reason the decisions are needed now, then the next steps.
+        Optional columns appear only when at least one row fills them.
+        """
+        slide = self._blank_slide()
+        margin = self.style["slide"]["margin_in"]
+        slide_w = self.style["slide"]["width_in"]
+        width = slide_w - 2 * margin
+        size = 12
+
+        self._add_action_title(slide, spec["title"], spec.get("framing_line"))
+        y = self._body_top(bool(spec.get("framing_line")))
+        bottom = self.style["slide"]["height_in"] - 0.75
+        if self._has_callout(spec):
+            bottom = self.CALLOUT_TOP_IN - 0.15
+
+        decisions = [d for d in spec.get("decisions", []) if isinstance(d, dict)]
+        steps = [s for s in spec.get("next_steps", []) if isinstance(s, dict)]
+        why_now = spec.get("why_now")
+
+        # Columns: number + decision always; the rest only when used
+        optional = [
+            ("safeguard", "Safeguard", 0.30),
+            ("owner", "Owner", 0.12),
+            ("deadline", "By when", 0.12),
+        ]
+        used = [c for c in optional if any(d.get(c[0]) for d in decisions)]
+        num_w = 0.4
+        rest = width - num_w
+        cols = [("decision", "Decision", 1.0 - sum(c[2] for c in used))] + used
+        gap = 0.15
+
+        def col_x(i):
+            return margin + num_w + rest * sum(c[2] for c in cols[:i])
+
+        def col_w(i):
+            return rest * cols[i][2] - gap
+
+        # Space budget: what the lower blocks need, the decision rows get the rest
+        steps_h = (0.4 + 0.3 * len(steps)) if steps else 0
+        why_h = 0.5 if why_now else 0
+        head_h = 0.4
+        n = max(len(decisions), 1)
+        row_h = max(0.5, min(0.95, (bottom - y - head_h - why_h - steps_h - 0.2) / n))
+
+        # Header row: the one filled element, marking the hierarchy level
+        head = slide.shapes.add_shape(
+            MSO_SHAPE.RECTANGLE, Inches(margin), Inches(y), Inches(width), Inches(head_h)
+        )
+        head.fill.solid()
+        head.fill.fore_color.rgb = hex_to_rgb(self.palette["neutral_dark"])
+        head.line.fill.background()
+        head.shadow.inherit = False
+        self._add_text(
+            slide, margin + 0.1, y, num_w, head_h, "#",
+            font_size=size, bold=True, color_hex="#FFFFFF", anchor=MSO_ANCHOR.MIDDLE,
+        )
+        for i, (_, label, _) in enumerate(cols):
+            self._add_text(
+                slide, col_x(i), y, col_w(i), head_h, label,
+                font_size=size, bold=True, color_hex="#FFFFFF",
+                anchor=MSO_ANCHOR.MIDDLE,
+            )
+        y += head_h
+
+        for r, d in enumerate(decisions):
+            self._add_text(
+                slide, margin + 0.1, y, num_w, row_h, str(r + 1),
+                font_size=size, bold=True, color_hex=self.palette["accent"],
+                anchor=MSO_ANCHOR.MIDDLE,
+            )
+            for i, (key, _, _) in enumerate(cols):
+                if key == "decision":
+                    text = f"**{d.get('decision', '')}**"
+                    if d.get("detail"):
+                        text += f"\n{d['detail']}"
+                else:
+                    text = str(d.get(key) or "")
+                if text:
+                    self._add_rich_text(
+                        slide, col_x(i), y, col_w(i), row_h, text,
+                        font_size=size, anchor=MSO_ANCHOR.MIDDLE,
+                    )
+            y += row_h
+            self._add_rule(slide, margin, y, width)
+
+        if why_now:
+            self._add_rich_text(
+                slide, margin, y + 0.12, width, why_h - 0.12,
+                f"**Why now:** {why_now}", font_size=size,
+            )
+            y += why_h
+
+        if steps:
+            y += 0.1
+            self._add_text(
+                slide, margin, y, width, 0.3, "Next steps",
+                font_size=size, bold=True, color_hex=self.palette["accent"],
+            )
+            y += 0.3
+            self._add_rule(slide, margin, y, width, self.palette["neutral_mid"])
+            y += 0.05
+            for s in steps:
+                self._add_rich_text(
+                    slide, margin, y, width * 0.64, 0.3, str(s.get("task", "")),
+                    font_size=size, anchor=MSO_ANCHOR.MIDDLE,
+                )
+                self._add_rich_text(
+                    slide, margin + width * 0.66, y, width * 0.18, 0.3,
+                    str(s.get("owner") or ""), font_size=size,
+                    anchor=MSO_ANCHOR.MIDDLE,
+                )
+                self._add_rich_text(
+                    slide, margin + width * 0.86, y, width * 0.14, 0.3,
+                    str(s.get("date") or ""), font_size=size,
+                    anchor=MSO_ANCHOR.MIDDLE,
+                )
+                y += 0.3
+
         self._add_footer(slide, spec.get("source"))
 
     def render_bullets(self, spec):
@@ -370,6 +645,8 @@ class DeckBuilder:
         my = self._body_top(bool(spec.get("framing_line")))
         mw = slide_w - 2 * margin - 1.5
         mh = self.style["slide"]["height_in"] - my - 1.5
+        if self._has_callout(spec):
+            mh -= self.CALLOUT_HEIGHT_IN
 
         # Outer box
         outer = slide.shapes.add_shape(
@@ -907,6 +1184,8 @@ class DeckBuilder:
         y = self._body_top(bool(spec.get("framing_line"))) + 0.3
         w = slide_w - 2 * margin
         h = self.style["slide"]["height_in"] - y - 1.5
+        if self._has_callout(spec):
+            h -= self.CALLOUT_HEIGHT_IN
         ph = slide.shapes.add_shape(
             MSO_SHAPE.RECTANGLE, Inches(x), Inches(y), Inches(w), Inches(h)
         )
@@ -953,7 +1232,8 @@ class DeckBuilder:
         "quote": "render_quote",
         "value_chain": "render_value_chain",
         "roadmap": "render_roadmap",
-        "section": "render_section_divider",
+        "decisions": "render_decisions",
+        "section":"render_section_divider",
         "section_divider": "render_section_divider",
         "chart": "render_chart_placeholder",
         "chart_placeholder": "render_chart_placeholder",
@@ -969,6 +1249,8 @@ class DeckBuilder:
             if stype != "title":
                 self._page_num += 1
             getattr(self, method_name)(spec)
+            if self._has_callout(spec) and stype not in self.NO_CALLOUT_TYPES:
+                self._add_callout(self.prs.slides[len(self.prs.slides) - 1], spec)
         self.prs.save(str(output_path))
 
 
@@ -995,7 +1277,7 @@ def main():
         print(f"ERROR: storyline not found: {args.storyline}", file=sys.stderr)
         sys.exit(1)
 
-    storyline = json.loads(args.storyline.read_text())
+    storyline = json.loads(args.storyline.read_text(encoding="utf-8"))
     out = args.out or args.storyline.with_suffix(".pptx")
 
     builder = DeckBuilder(storyline, palette_name=args.palette)

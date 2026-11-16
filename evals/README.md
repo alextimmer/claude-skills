@@ -8,7 +8,17 @@ Each skill gets its own subfolder, named after the skill (not the plugin):
 
 ```
 evals/
-└── mbb-deck/
+├── mbb-deck/
+│   ├── README.md
+│   ├── test_prompts.json
+│   └── test_validate_storyline.py
+├── executive-storyline/
+│   ├── README.md
+│   └── test_prompts.json
+├── work-brief/
+│   ├── README.md
+│   └── test_prompts.json
+└── memory-harness/
     ├── README.md
     └── test_prompts.json
 ```

@@ -1,0 +1,127 @@
+{
+  "$schema": "Test prompts for measuring whether the executive-storyline skill triggers correctly. Run these through the skill_creator eval harness or a similar tool.",
+  "skill": "executive-storyline",
+  "expected_trigger_rate_min": 0.85,
+  "expected_no_trigger_rate_min": 0.90,
+  "should_trigger": [
+    {
+      "id": "trigger-01",
+      "prompt": "Write the email to the board that goes with this deck. They should know what we recommend without opening the attachment.",
+      "rationale": "Condense mode: an executive summary email derived from an existing deck"
+    },
+    {
+      "id": "trigger-02",
+      "prompt": "I need a one-page executive summary of this 40-page report for the CEO.",
+      "rationale": "Names an executive summary and an executive reader"
+    },
+    {
+      "id": "trigger-03",
+      "prompt": "Help me with the storyline for a steering committee paper on the ERP migration. No slides yet, just the structure.",
+      "rationale": "Storyline + steering committee paper, explicitly before slides"
+    },
+    {
+      "id": "trigger-04",
+      "prompt": "Can you review my exec summary? I think the key message is buried.",
+      "rationale": "Feedback mode on an executive summary; 'key message' vocabulary"
+    },
+    {
+      "id": "trigger-05",
+      "prompt": "I have to send a pre-read for Thursday's decision meeting. What should be in it and how do I structure it?",
+      "rationale": "Pre-read for a decision meeting"
+    },
+    {
+      "id": "trigger-06",
+      "prompt": "My manager asked what the status of the pricing project is. How do I answer top-down instead of walking through everything we did?",
+      "rationale": "Spoken update, top-down communication, content versus process"
+    },
+    {
+      "id": "trigger-07",
+      "prompt": "Turn these analysis results into a memo to the leadership team. Answer first.",
+      "rationale": "Memo to leadership + answer first"
+    },
+    {
+      "id": "trigger-08",
+      "prompt": "What is the so what of these numbers? I only have a summary of findings and need a recommendation for the CFO.",
+      "rationale": "'So what' and the step from summary to recommendation"
+    },
+    {
+      "id": "trigger-09",
+      "prompt": "Give me feedback on this document outline before I start writing. It is for the supervisory board.",
+      "rationale": "Feedback on an outline for a board audience"
+    },
+    {
+      "id": "trigger-10",
+      "prompt": "Summarize this deck in five sentences I can say in the management meeting, including what I need them to decide.",
+      "rationale": "Condense into a spoken update with a decision ask"
+    },
+    {
+      "id": "trigger-11",
+      "prompt": "Draft a decision paper for the executive committee: should we renew the logistics contract or tender it?",
+      "rationale": "Decision paper for an executive committee"
+    },
+    {
+      "id": "trigger-12",
+      "prompt": "How do I present this to the board? I have the analysis but no idea how to structure the message.",
+      "rationale": "'How do I present this' with a board audience and no format fixed"
+    }
+  ],
+  "should_not_trigger": [
+    {
+      "id": "no-trigger-01",
+      "prompt": "Summarize this meeting transcript into bullet points.",
+      "rationale": "Neutral summary, no executive reader, no recommendation"
+    },
+    {
+      "id": "no-trigger-02",
+      "prompt": "Write an email to my landlord about the broken heating.",
+      "rationale": "Private email, no executive communication"
+    },
+    {
+      "id": "no-trigger-03",
+      "prompt": "Write the minutes of today's project meeting from these notes.",
+      "rationale": "Minutes are a record, not a storyline"
+    },
+    {
+      "id": "no-trigger-04",
+      "prompt": "Summarize this research paper for my literature review.",
+      "rationale": "Academic summary"
+    },
+    {
+      "id": "no-trigger-05",
+      "prompt": "Build me a 12-slide board deck recommending our market entry strategy, with action titles.",
+      "rationale": "A deck build belongs to mbb-deck; this skill may be pulled in by it but should not be the entry point"
+    },
+    {
+      "id": "no-trigger-06",
+      "prompt": "What is the pyramid principle?",
+      "rationale": "Definitional question, no asset to create or review"
+    },
+    {
+      "id": "no-trigger-07",
+      "prompt": "Write a story outline for my fantasy novel.",
+      "rationale": "'Storyline' in the fiction sense"
+    },
+    {
+      "id": "no-trigger-08",
+      "prompt": "Write release notes for version 2.4 from this changelog.",
+      "rationale": "Technical documentation"
+    },
+    {
+      "id": "no-trigger-09",
+      "prompt": "Reply to this customer complaint politely.",
+      "rationale": "Customer service reply"
+    },
+    {
+      "id": "no-trigger-10",
+      "prompt": "Write a quick Slack message to my team that I am out tomorrow.",
+      "rationale": "Casual team message"
+    }
+  ],
+  "notes": [
+    "Trigger rate target: at least 85% of should_trigger prompts should activate the skill.",
+    "False-positive rate target: at most 10% of should_not_trigger prompts should activate it.",
+    "Boundary with mbb-deck: a request for slides goes to mbb-deck; a request for the storyline alone, or for a non-slide asset, comes here. 'no-trigger-05' tests that boundary and is debatable when both skills are installed.",
+    "Classic false-positive trap: 'summarize' without an executive reader or a recommendation (no-trigger-01, no-trigger-04).",
+    "Classic false-negative trap: the user describes the problem ('how do I present this', 'what is the status') without naming a storyline or a summary (trigger-06, trigger-12)."
+  ]
+}

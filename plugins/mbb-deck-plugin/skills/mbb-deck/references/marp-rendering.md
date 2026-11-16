@@ -161,8 +161,30 @@ Notes:
 Notes:
 - The H1 IS the action title (governing thought). One H1 per slide — this is the rule everywhere except the title slide.
 - The framing line goes as `##### H5` immediately under the H1. Small, gray, methodology-flavored. (You can also use a paragraph with `*italic*` if your theme styles H5 oddly.)
-- Bold the lead noun phrase of each supporting point so the eye picks them up.
+- Bold the lead of each supporting point so the eye picks them up. When the JSON point already carries a `**bold lead**`, pass it through unchanged.
 - The source goes in the per-slide footer using `_footer:`.
+
+When the slide carries `context`, `decisions` and `why_now`, render the context as a paragraph above the list and the decisions as a blockquote below it:
+
+```markdown
+# Acme should move upmarket to enterprise HR in 2026, funded by sunsetting SMB — adding $40M ARR over 24 months
+
+Acme has been a top-3 player in US mid-market HR software for five years. The board must now decide where to invest the 2026 growth budget.
+
+1. **Growth has stalled at 3%** for two years while competitors grew 25%+
+2. **The enterprise segment is $4.2B** and growing 18%, three times our TAM
+3. **The SMB tier costs $14M annually** and is contribution-margin negative
+
+> **Decisions needed**
+> 1. Approve the move upmarket to enterprise HR as the 2026 growth priority
+> 2. Approve the SMB tier sunset over 18 months, starting in Q2 2026
+>
+> **Why now:** the 9-month feature lead holds only if the build starts in Q2 2026
+
+<!-- _footer: 'Source: Strategy team analysis; Acme financials FY24' -->
+```
+
+Most themes style a blockquote as an indented, bordered block, which reads as the "own box" the decisions need. If five points plus the box overflow the slide, apply the font-size scaling hack (Hack 5) to this slide only.
 
 ### Bullets (`type: bullets`)
 
@@ -246,7 +268,7 @@ Notes:
 Use a multi-column grid (see "Multi-column layouts" below for the standard `.columns` pattern):
 
 ```markdown
-# We evaluated four growth paths against three criteria; only enterprise expansion meets all three
+# Of four growth paths, only enterprise expansion meets all three criteria
 
 ##### Strategy team modeling, March 2026
 
@@ -452,6 +474,48 @@ Public APIs and webhooks
 
 <!-- _footer: 'Source: Implementation plan, March 2026' -->
 ```
+
+### Decisions and next steps (`type: decisions`)
+
+Two markdown tables: the decisions (columns only for the fields in use), then the next steps. "Why now" sits between them as one line.
+
+```markdown
+# The board is asked for three decisions in April 2026 so that the build starts in Q2 2026
+
+##### Each decision is paired with the safeguard that answers its main risk
+
+| # | Decision | Safeguard | Owner | By when |
+|---|---|---|---|---|
+| 1 | **Approve the move upmarket to enterprise HR as the 2026 growth priority**<br>Six features in three quarters with current engineering capacity | Go/no-go review after the first 5 enterprise wins | CEO | April 2026 |
+| 2 | **Approve the SMB tier sunset over 18 months, starting in Q2 2026**<br>Frees the $14M a year that funds the enterprise build | 18-month transition period and partner referral program | COO | April 2026 |
+| 3 | **Release the budget for 3 enterprise sales hires in Q2 2026** | Existing top-30 accounts as anchor customers | CRO | April 2026 |
+
+**Why now:** The 9-month feature lead over competitors holds only if the build starts in Q2 2026.
+
+| Next steps | Owner | Date |
+|---|---|---|
+| Start SSO & SCIM beta | CTO | Q2 2026 |
+| Begin SMB sunset communication to customers and partners | COO | Q2 2026 |
+
+<!-- _footer: 'Source: Implementation plan, March 2026' -->
+```
+
+Notes:
+- `decision` goes in bold; `detail` follows after a `<br>` in the same cell.
+- Drop the Safeguard, Owner or By when column when no decision fills it.
+- This is the last slide before the appendix divider.
+
+### Callout and page name (any content slide)
+
+A `callout` becomes a blockquote placed last on the slide, directly above the footer directive; the `label` is its bold lead:
+
+```markdown
+> **What protects SMB revenue during the sunset:** An 18-month transition period and a partner referral program; the tier leaves the price list only in Q3–Q4 2026.
+
+<!-- _footer: 'Source: Acme financials FY24' -->
+```
+
+A `name` is metadata and is not rendered. Keep it as an HTML comment at the top of the slide so the source stays navigable: `<!-- page: the SMB page -->`.
 
 ### Section divider (`type: section`)
 
