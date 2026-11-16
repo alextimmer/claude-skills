@@ -70,7 +70,10 @@ Note: Claude.ai uploads do NOT include the slash commands or subagents in this p
 ## Where it runs
 
 - **Claude Code** — everything: both skills, the three commands, the subagents, the validation hook, and the bundled Python tools.
-- **claude.ai and agent environments such as Claude Cowork** — the skills carry the method and need no tooling. The deck skill leaves rendering to the environment: where the host has its own way to make presentations, it uses that, in your template where you have one, and does not route the deck through the bundled scripts. Subagents and slash commands are Claude Code features; without them the skill runs the same checks inline. (Verified in Claude Code only; the behavior elsewhere follows from the skill text and has not been tested there.)
+- **Claude Cowork** — install the plugin from this marketplace (Customize, Plugins, Add marketplace, `alextimmer/claude-skills`) or upload the plugin folder as a zip. Cowork loads the skills, commands, subagents and the hook. The deck skill leaves rendering to Cowork: it uses whatever Cowork normally uses to make presentations, in your template where you have one, and does not route the deck through the bundled scripts.
+- **claude.ai skill upload** — a single skill folder, without commands, subagents or hook; the skill then runs the same checks inline.
+
+Verified in Claude Code only; the behavior in Cowork and claude.ai follows from the skill text and has not been tested there.
 
 The storyline JSON, `build_deck.py` and the Marp guide are for decks made in other tooling — Claude Code, CI, version-controlled markdown decks.
 

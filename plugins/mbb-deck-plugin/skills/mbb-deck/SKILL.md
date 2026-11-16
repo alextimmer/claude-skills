@@ -30,7 +30,7 @@ The skill has two modes: **create** (develop storyline and slides — the workfl
 
 This plugin ships several subagents that handle specific phases of the work. Suggest them at the right moments in the workflow below — they run in their own context and return structured output without polluting the main conversation.
 
-Subagents and slash commands are Claude Code features. Where the environment has none (the skill loaded on its own, in a chat or desktop agent), do the same work inline: the reviewer's checks are the "Test your storyline" list in `references/storyline.md`, and the production checklist is in `references/visual-style.md`. Nothing in the method depends on them.
+Subagents and slash commands come with the plugin (Claude Code and Claude Cowork both load them). Where the skill is loaded on its own, as an uploaded skill folder, do the same work inline: the reviewer's checks are the "Test your storyline" list in `references/storyline.md`, and the production checklist is in `references/visual-style.md`. Nothing in the method depends on them.
 
 **Pre-build analytical agents** (use when the deck depends on data analysis):
 
