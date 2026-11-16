@@ -4,7 +4,7 @@ This installs the memory + hook system from `./template/` into any repository. B
 ~15 minutes. Read `README.md` first if you want the *why*; this is the *how* — for
 humans. To have Claude install it for you instead, install the plugin once
 (`/plugin marketplace add alextimmer/claude-skills`, then
-`/plugin install claude-memory-harness@claude-skills`) and say "install my harness" in any
+`/plugin install memory-save-gate-harness@claude-skills`) and say "install my harness" in any
 repo (the skill's `references/install-procedure.md` mirrors these steps).
 
 ## What you're installing
@@ -33,8 +33,8 @@ repo (the skill's `references/install-procedure.md` mirrors these steps).
 ```bash
 # from the repo you want to set up (adjust the source path to your clone of this
 # plugin — or, if the plugin is installed, to its cache under ~/.claude/plugins/)
-cp    /path/to/claude-memory-harness/template/CLAUDE.md     ./CLAUDE.md
-cp -r /path/to/claude-memory-harness/template/.claude       ./.claude
+cp    /path/to/memory-save-gate-harness/template/CLAUDE.md     ./CLAUDE.md
+cp -r /path/to/memory-save-gate-harness/template/.claude       ./.claude
 ```
 
 > The `.claude/settings.README.md` file is documentation, not config — Claude does not

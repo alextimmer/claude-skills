@@ -8,7 +8,7 @@ copying `template/` into a repo (see `INSTALL.md`). Installing this plugin adds 
 
 ```bash
 /plugin marketplace add alextimmer/claude-skills
-/plugin install claude-memory-harness@claude-skills
+/plugin install memory-save-gate-harness@claude-skills
 # then, in any repo: "install my harness"
 ```
 

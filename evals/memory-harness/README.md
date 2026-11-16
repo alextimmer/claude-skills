@@ -1,6 +1,6 @@
 # memory-harness evals
 
-Test prompts for measuring whether the `memory-harness` skill (from `claude-memory-harness`) triggers correctly.
+Test prompts for measuring whether the `memory-harness` skill (from `memory-save-gate-harness`) triggers correctly.
 
 ## Why this matters
 
@@ -19,8 +19,8 @@ Same options as [`evals/mbb-deck/README.md`](../mbb-deck/README.md): manual sani
 - **Trigger rate** (should_trigger prompts that activate the skill): **≥ 85%**
 - **No-trigger rate** (should_not_trigger prompts that correctly stay quiet): **≥ 90%**
 
-If rates drift, edit the `description` field in `plugins/claude-memory-harness/skills/memory-harness/SKILL.md` — add the missed phrasing to the description (under-triggering) or add explicit counter-examples like "not for test harnesses or memory profiling" (over-triggering).
+If rates drift, edit the `description` field in `plugins/memory-save-gate-harness/skills/memory-harness/SKILL.md` — add the missed phrasing to the description (under-triggering) or add explicit counter-examples like "not for test harnesses or memory profiling" (over-triggering).
 
 ## Note on scope
 
-This folder lives at the **repo root** intentionally — it's maintainer tooling, not part of the user-facing plugin. Users who install `claude-memory-harness` via `/plugin install` won't get these evals, which is correct.
+This folder lives at the **repo root** intentionally — it's maintainer tooling, not part of the user-facing plugin. Users who install `memory-save-gate-harness` via `/plugin install` won't get these evals, which is correct.

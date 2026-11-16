@@ -1,5 +1,5 @@
 {
-  "name": "claude-memory-harness",
+  "name": "memory-save-gate-harness",
   "description": "Project memory harness for Claude Code: CLAUDE.md standing instructions, dated + attributed .claude/rules memory, and tested SessionStart/PreCompact/Stop hooks — installed into any repo via the bundled 'memory-harness' skill.",
   "author": {
     "name": "alextimmer"

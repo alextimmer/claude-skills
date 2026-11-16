@@ -10,7 +10,7 @@ Marketplace installs package only each plugin's own directory (the `source:
 `docs/` and `evals/` are never copied into a user's plugin cache and never load into
 anyone's Claude context. They are visible on GitHub (committed and public) — that is
 the intended difference from gitignored maintainer material (e.g.
-`plugins/claude-memory-harness/research/`, which never publishes at all).
+`plugins/memory-save-gate-harness/research/`, which never publishes at all).
 
 ## What belongs here
 

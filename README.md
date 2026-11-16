@@ -25,7 +25,7 @@ Inside any Claude Code session (CLI or VS Code extension):
 /plugin marketplace add alextimmer/claude-skills
 
 # 2. Install whichever plugin(s) you want
-/plugin install claude-memory-harness@claude-skills
+/plugin install memory-save-gate-harness@claude-skills
 /plugin install reviewing-prs@claude-skills
 /plugin install mbb-deck-plugin@claude-skills
 
@@ -39,13 +39,13 @@ Updates flow automatically: the plugins deliberately omit the `version` field, s
 
 | Plugin | One-liner | Runs on |
 |--------|-----------|---------|
-| 🧠 [`claude-memory-harness`](plugins/claude-memory-harness/) | Give stateless Claude Code sessions a persistent, committable project memory | Claude Code only |
+| 🧠 [`memory-save-gate-harness`](plugins/memory-save-gate-harness/) | Give stateless Claude Code sessions a persistent, committable project memory | Claude Code only |
 | 🔍 [`reviewing-prs`](plugins/reviewing-prs/) | Review PRs/MRs on Azure DevOps, GitHub and GitLab with verified, clickable, paste-ready findings and a hard approval gate | Claude Code only |
 | 📊 [`mbb-deck-plugin`](plugins/mbb-deck-plugin/) | Build presentations and executive summaries the way top-tier consulting firms structure them | Claude Code + Claude.ai |
 
 ---
 
-### 🧠 claude-memory-harness
+### 🧠 memory-save-gate-harness
 
 > A fresh Claude Code session knows nothing about yesterday. This harness makes it **arrive already knowing the project** and **leave the project better documented than it found it** — with plain, committable files. No database, no server, no embeddings, no `jq`.
 
@@ -71,9 +71,9 @@ flowchart LR
 - 🛡️ **Memory is data, not instructions** — the template frames the auto-loaded memory files as notes, forbids pasting external content into them, and keeps one writer per file (subagents report lessons, the main session records them)
 - 🤖 **The `memory-harness` skill** — say *"install my harness"* in any repo and Claude installs, adapts, and verifies the whole thing for you (asking first whether it should be team-shared or kept out of git via `.git/info/exclude`)
 
-Installing the plugin adds the *installer* — your repos stay untouched until you ask for the harness in one of them. Design rationale for every choice lives in [`DECISIONS.md`](plugins/claude-memory-harness/DECISIONS.md); manual install and verification steps in [`INSTALL.md`](plugins/claude-memory-harness/INSTALL.md).
+Installing the plugin adds the *installer* — your repos stay untouched until you ask for the harness in one of them. Design rationale for every choice lives in [`DECISIONS.md`](plugins/memory-save-gate-harness/DECISIONS.md); manual install and verification steps in [`INSTALL.md`](plugins/memory-save-gate-harness/INSTALL.md).
 
-**Requirements:** bash + grep + sed (Linux/macOS: built-in; Windows: Git Bash — see the [plugin README](plugins/claude-memory-harness/README.md)).
+**Requirements:** bash + grep + sed (Linux/macOS: built-in; Windows: Git Bash — see the [plugin README](plugins/memory-save-gate-harness/README.md)).
 
 ---
 
@@ -162,7 +162,7 @@ claude-skills/
 │   │       │   ├── references/
 │   │       │   └── scripts/      ← lint_prose.py
 │   │       └── work-brief/       ← the brief for an AI tool, a colleague or an agency (also uploadable)
-│   ├── claude-memory-harness/    ← project memory harness (Claude Code only)
+│   ├── memory-save-gate-harness/    ← project memory harness (Claude Code only)
 │   │   ├── .claude-plugin/
 │   │   │   └── plugin.json
 │   │   ├── template/             ← the payload the skill copies into target repos
@@ -217,7 +217,7 @@ claude plugin validate .
 This catches naming errors, JSON parse issues, and frontmatter problems across all plugins. For the memory harness, additionally run its hook self-test:
 
 ```bash
-bash plugins/claude-memory-harness/template/.claude/hooks/selftest.sh
+bash plugins/memory-save-gate-harness/template/.claude/hooks/selftest.sh
 # -> 43 passed, 0 failed
 ```
 

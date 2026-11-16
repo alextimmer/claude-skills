@@ -3,7 +3,7 @@
   "owner": {
     "name": "alextimmer"
   },
-  "description": "A collection of Claude skills, plugins, and subagents. Includes mbb-deck-plugin (MBB-style management consulting presentations), claude-memory-harness (project memory + hooks harness) and reviewing-prs (PR/MR reviews for Azure DevOps, GitHub and GitLab with an approval gate).",
+  "description": "A collection of Claude skills, plugins, and subagents. Includes mbb-deck-plugin (MBB-style management consulting presentations), memory-save-gate-harness (project memory + hooks harness) and reviewing-prs (PR/MR reviews for Azure DevOps, GitHub and GitLab with an approval gate).",
   "plugins": [
     {
       "name": "reviewing-prs",
@@ -57,8 +57,8 @@
       "license": "PolyForm-Noncommercial-1.0.0"
     },
     {
-      "name": "claude-memory-harness",
-      "source": "./plugins/claude-memory-harness",
+      "name": "memory-save-gate-harness",
+      "source": "./plugins/memory-save-gate-harness",
       "description": "Turn stateless Claude Code sessions into ones with a persistent lab notebook: CLAUDE.md standing instructions, dated + attributed .claude/rules project memory, and tested SessionStart/PreCompact/Stop hooks. Ships the 'memory-harness' skill — say 'install my harness' in any repo to copy, adapt, and verify the template there.",
       "category": "workflow",
       "keywords": [

@@ -37,6 +37,6 @@ build/
 scratch/*
 
 # Maintainer research (never ships; keep out of the published repo)
-plugins/claude-memory-harness/research/
+plugins/memory-save-gate-harness/research/
 
 *.code-workspace
